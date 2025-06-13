@@ -19,6 +19,9 @@ export const vi = {
     optional: "Tùy chọn",
     more: "Xem thêm",
     less: "Thu gọn",
+    page_not_found: "Không Tìm Thấy Trang",
+    page_not_found_description: "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.",
+    back_to_home: "Quay Lại Trang Chủ",
   },
 
   // Navigation

@@ -1,22 +1,19 @@
-import type { Metadata } from "next"
+"use client"
+
 import Image from "next/image"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { blogPosts } from "@/lib/blog-data"
-
-export const metadata: Metadata = {
-  title: "Blog - TechFix",
-  description: "Repair tips, tech news, and helpful guides for laptop and Macbook users.",
-}
+import { useTranslation } from "@/hooks/use-translation"
 
 export default function BlogPage() {
+  const { t } = useTranslation()
+
   return (
     <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Repair Tips & Tech News</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          Helpful guides, repair tips, and the latest tech news to keep your devices running smoothly.
-        </p>
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{t("blog.title")}</h1>
+        <p className="mt-4 text-lg text-muted-foreground">{t("blog.subtitle")}</p>
       </div>
 
       <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -64,23 +61,21 @@ export default function BlogPage() {
       <div className="mt-16 rounded-lg bg-muted p-8">
         <div className="grid gap-8 md:grid-cols-2">
           <div>
-            <h2 className="text-2xl font-bold">Subscribe to Our Newsletter</h2>
-            <p className="mt-4 text-muted-foreground">
-              Get the latest repair tips, tech news, and special offers delivered straight to your inbox.
-            </p>
+            <h2 className="text-2xl font-bold">{t("blog.newsletter.title")}</h2>
+            <p className="mt-4 text-muted-foreground">{t("blog.newsletter.description")}</p>
           </div>
           <div className="flex items-end">
             <form className="flex w-full max-w-md flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
               <input
                 type="email"
-                placeholder="Your email address"
+                placeholder={t("blog.newsletter.email_placeholder")}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
               <button
                 type="submit"
                 className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               >
-                Subscribe
+                {t("blog.newsletter.subscribe")}
               </button>
             </form>
           </div>

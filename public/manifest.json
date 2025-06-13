@@ -1,0 +1,21 @@
+{
+  "name": "LaptopSun - Dịch vụ sửa chữa Macbook & Laptop chuyên nghiệp",
+  "short_name": "LaptopSun",
+  "icons": [
+    {
+      "src": "/laptopsun-logo.png",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/laptopsun-logo.png",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#ffc907",
+  "background_color": "#ffffff",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

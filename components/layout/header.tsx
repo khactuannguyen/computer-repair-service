@@ -63,13 +63,7 @@ export default function Header() {
             <span className="sr-only">LaptopSun</span>
             <div className="flex items-center gap-2">
               <div className="relative h-8 w-8">
-                <Image
-                  src="/placeholder.svg?height=32&width=32"
-                  alt="LaptopSun Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
+                <Image src="/laptopsun-logo.png" alt="LaptopSun Logo" fill className="object-contain" priority />
               </div>
               <span className="text-xl font-bold">LaptopSun</span>
             </div>
@@ -130,12 +124,7 @@ export default function Header() {
               <span className="sr-only">LaptopSun</span>
               <div className="flex items-center gap-2">
                 <div className="relative h-8 w-8">
-                  <Image
-                    src="/placeholder.svg?height=32&width=32"
-                    alt="LaptopSun Logo"
-                    fill
-                    className="object-contain"
-                  />
+                  <Image src="/laptopsun-logo.png" alt="LaptopSun Logo" fill className="object-contain" />
                 </div>
                 <span className="text-xl font-bold">LaptopSun</span>
               </div>

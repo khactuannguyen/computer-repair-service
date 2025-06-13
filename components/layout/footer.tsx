@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Facebook, Phone, Mail, MapPin, Clock } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
+import Image from "next/image"
 
 export default function Footer() {
   const { t } = useTranslation()
@@ -13,7 +14,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div>
-            <h3 className="text-lg font-semibold">LaptopSun</h3>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="relative h-8 w-8">
+                <Image src="/laptopsun-logo.png" alt="LaptopSun Logo" fill className="object-contain" />
+              </div>
+              <h3 className="text-lg font-semibold">LaptopSun</h3>
+            </div>
             <p className="mt-4 text-sm text-muted-foreground">{t("footer.company_description")}</p>
             <div className="mt-6 flex space-x-4">
               <Link

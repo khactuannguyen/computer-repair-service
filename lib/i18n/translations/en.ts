@@ -19,6 +19,9 @@ export const en = {
     optional: "Optional",
     more: "More info",
     less: "Less info",
+    page_not_found: "Page Not Found",
+    page_not_found_description: "The page you're looking for doesn't exist or has been moved.",
+    back_to_home: "Back to Home",
   },
 
   // Navigation

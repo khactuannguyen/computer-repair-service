@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import { TranslationContext } from "@/hooks/use-translation"
 import type { Locale } from "@/lib/i18n/config"
 import { defaultLocale, locales } from "@/lib/i18n/config"
+import { HtmlLangProvider } from "./html-lang-provider"
 
 interface TranslationProviderProps {
   children: React.ReactNode
@@ -48,6 +49,9 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
   }
 
   return (
-    <TranslationContext.Provider value={{ locale, setLocale: handleSetLocale }}>{children}</TranslationContext.Provider>
+    <TranslationContext.Provider value={{ locale, setLocale: handleSetLocale }}>
+      <HtmlLangProvider />
+      {children}
+    </TranslationContext.Provider>
   )
 }
