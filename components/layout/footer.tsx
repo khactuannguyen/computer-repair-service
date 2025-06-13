@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Facebook, Phone, Mail, MapPin, Clock } from "lucide-react"
-import { useTranslation } from "@/hooks/use-translation"
-import Image from "next/image"
+import Link from "next/link";
+import { Facebook, Phone, Mail, MapPin, Clock } from "lucide-react";
+import { useTranslation } from "@/hooks/use-translation";
+import Image from "next/image";
 
 export default function Footer() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <footer className="bg-muted">
@@ -16,11 +16,18 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="relative h-8 w-8">
-                <Image src="/laptopsun-logo.png" alt="LaptopSun Logo" fill className="object-contain" />
+                <Image
+                  src="/laptopsun-logo.svg"
+                  alt="LaptopSun Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
               <h3 className="text-lg font-semibold">LaptopSun</h3>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">{t("footer.company_description")}</p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              {t("footer.company_description")}
+            </p>
             <div className="mt-6 flex space-x-4">
               <Link
                 href="https://www.facebook.com/laptopsun"
@@ -47,22 +54,34 @@ export default function Footer() {
             <h3 className="text-lg font-semibold">{t("footer.quick_links")}</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href="/services" className="text-sm text-muted-foreground hover:text-primary">
+                <Link
+                  href="/services"
+                  className="text-sm text-muted-foreground hover:text-primary"
+                >
                   {t("footer.our_services")}
                 </Link>
               </li>
               <li>
-                <Link href="/book-appointment" className="text-sm text-muted-foreground hover:text-primary">
+                <Link
+                  href="/book-appointment"
+                  className="text-sm text-muted-foreground hover:text-primary"
+                >
                   {t("nav.book_appointment")}
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-sm text-muted-foreground hover:text-primary">
+                <Link
+                  href="/blog"
+                  className="text-sm text-muted-foreground hover:text-primary"
+                >
                   {t("footer.repair_tips")}
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-sm text-muted-foreground hover:text-primary">
+                <Link
+                  href="/contact"
+                  className="text-sm text-muted-foreground hover:text-primary"
+                >
                   {t("footer.contact_us")}
                 </Link>
               </li>
@@ -75,13 +94,19 @@ export default function Footer() {
             <ul className="mt-4 space-y-3">
               <li className="flex items-start">
                 <Phone className="mr-2 h-5 w-5 text-muted-foreground" />
-                <Link href="tel:0857270270" className="text-sm text-muted-foreground hover:text-primary">
+                <Link
+                  href="tel:0857270270"
+                  className="text-sm text-muted-foreground hover:text-primary"
+                >
                   0857 270 270
                 </Link>
               </li>
               <li className="flex items-start">
                 <Mail className="mr-2 h-5 w-5 text-muted-foreground" />
-                <Link href="mailto:support@laptopsun.vn" className="text-sm text-muted-foreground hover:text-primary">
+                <Link
+                  href="mailto:support@laptopsun.vn"
+                  className="text-sm text-muted-foreground hover:text-primary"
+                >
                   support@laptopsun.vn
                 </Link>
               </li>
@@ -98,7 +123,9 @@ export default function Footer() {
               </li>
               <li className="flex items-start">
                 <Clock className="mr-2 h-5 w-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground whitespace-pre-line">{t("footer.business_hours")}</span>
+                <span className="text-sm text-muted-foreground whitespace-pre-line">
+                  {t("footer.business_hours")}
+                </span>
               </li>
             </ul>
           </div>
@@ -125,5 +152,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
