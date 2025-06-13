@@ -23,9 +23,9 @@ async function getTechnicians() {
 }
 
 export default async function NewOrderPage() {
-  await checkRole(['admin', 'receptionist'])
+  await checkRole(["admin", "receptionist"])
   const technicians = await getTechnicians()
-  
+
   return (
     <div>
       <div className="flex items-center mb-6">
@@ -36,7 +36,7 @@ export default async function NewOrderPage() {
         </Link>
         <h1 className="text-2xl font-bold">Tạo đơn sửa chữa mới</h1>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Thông tin đơn sửa chữa</CardTitle>
@@ -83,7 +83,7 @@ export default async function NewOrderPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Thông tin thiết bị</h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -141,7 +141,7 @@ export default async function NewOrderPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Thông tin sửa chữa</h3>
               <div>
@@ -158,4 +158,71 @@ export default async function NewOrderPage() {
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="estimatedCost" className="block text-sm font-medium text-gray-700\">
+                  <label htmlFor="estimatedCost" className="block text-sm font-medium text-gray-700">
+                    Chi phí ước tính (VND)
+                  </label>
+                  <input
+                    type="number"
+                    id="estimatedCost"
+                    name="estimatedCost"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="estimatedCompletionDate" className="block text-sm font-medium text-gray-700">
+                    Ngày hoàn thành dự kiến
+                  </label>
+                  <input
+                    type="date"
+                    id="estimatedCompletionDate"
+                    name="estimatedCompletionDate"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="assignedTo" className="block text-sm font-medium text-gray-700">
+                  Kỹ thuật viên phụ trách
+                </label>
+                <select
+                  id="assignedTo"
+                  name="assignedTo"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 sm:text-sm"
+                >
+                  <option value="">Chọn kỹ thuật viên</option>
+                  {technicians.map((tech) => (
+                    <option key={tech.id} value={tech.id}>
+                      {tech.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="internalNotes" className="block text-sm font-medium text-gray-700">
+                  Ghi chú nội bộ
+                </label>
+                <textarea
+                  id="internalNotes"
+                  name="internalNotes"
+                  rows={2}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 sm:text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <Link href="/admin/dashboard/orders">
+                <Button variant="outline" type="button">
+                  Hủy
+                </Button>
+              </Link>
+              <Button type="submit" className="bg-yellow-500 hover:bg-yellow-600">
+                Tạo đơn sửa chữa
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
