@@ -1,125 +1,166 @@
-"use client"
-
-import { useState } from "react"
+import { checkAuth } from "@/lib/auth/auth"
+import connectToDatabase from "@/lib/db/mongodb"
+import RepairOrder from "@/lib/db/models/RepairOrder"
+import User from "@/lib/db/models/User"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { PenToolIcon as Tool, CheckCircle, Clock, AlertCircle, UsersIcon } from "lucide-react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { repairOrders } from "@/lib/orders-data"
-import { useTranslation } from "@/hooks/use-translation"
 
-export default function AdminDashboardPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const { t } = useTranslation()
+async function getStats() {
+  await connectToDatabase()
 
-  const filteredOrders = repairOrders.filter((order) => {
-    const matchesSearch =
-      order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.deviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.id.toLowerCase().includes(searchTerm.toLowerCase())
+  const totalOrders = await RepairOrder.countDocuments()
+  const pendingOrders = await RepairOrder.countDocuments({ status: "pending" })
+  const inProgressOrders = await RepairOrder.countDocuments({ status: "in_progress" })
+  const completedOrders = await RepairOrder.countDocuments({ status: "completed" })
+  const totalUsers = await User.countDocuments()
 
-    const matchesStatus = statusFilter === "all" || order.status === statusFilter
+  const recentOrders = await RepairOrder.find().sort({ createdAt: -1 }).limit(5).lean()
 
-    return matchesSearch && matchesStatus
-  })
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-800"
-      case "in-progress":
-        return "bg-blue-100 text-blue-800"
-      case "completed":
-        return "bg-green-100 text-green-800"
-      case "cancelled":
-        return "bg-red-100 text-red-800"
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
+  return {
+    totalOrders,
+    pendingOrders,
+    inProgressOrders,
+    completedOrders,
+    totalUsers,
+    recentOrders,
   }
+}
+
+export default async function AdminDashboardPage() {
+  await checkAuth()
+  const stats = await getStats()
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
-        <div>
-          <h1 className="text-2xl font-bold">{t("admin.dashboard.title")}</h1>
-          <p className="text-muted-foreground">{t("admin.dashboard.subtitle")}</p>
-        </div>
-        <Button asChild>
-          <Link href="/admin/dashboard/new-order">{t("admin.dashboard.new_order")}</Link>
-        </Button>
+    <div>
+      <h1 className="text-2xl font-bold mb-6">Tổng quan</h1>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tổng đơn sửa chữa</CardTitle>
+            <Tool className="h-4 w-4 text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalOrders}</div>
+            <p className="text-xs text-gray-500">Tất cả đơn sửa chữa</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Đang chờ xử lý</CardTitle>
+            <Clock className="h-4 w-4 text-yellow-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.pendingOrders}</div>
+            <p className="text-xs text-gray-500">Đơn đang chờ xử lý</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Đang sửa chữa</CardTitle>
+            <AlertCircle className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.inProgressOrders}</div>
+            <p className="text-xs text-gray-500">Đơn đang được sửa chữa</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Đã hoàn thành</CardTitle>
+            <CheckCircle className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.completedOrders}</div>
+            <p className="text-xs text-gray-500">Đơn đã hoàn thành</p>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="mt-8 rounded-lg border bg-card p-4 shadow-sm">
-        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
-          <div className="flex-1">
-            <Input
-              placeholder={t("admin.dashboard.search_placeholder")}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-md"
-            />
-          </div>
-          <div className="w-full md:w-48">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            >
-              <option value="all">{t("admin.dashboard.status.all")}</option>
-              <option value="pending">{t("admin.dashboard.status.pending")}</option>
-              <option value="in-progress">{t("admin.dashboard.status.in_progress")}</option>
-              <option value="completed">{t("admin.dashboard.status.completed")}</option>
-              <option value="cancelled">{t("admin.dashboard.status.cancelled")}</option>
-            </select>
-          </div>
-        </div>
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Đơn sửa chữa gần đây</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {stats.recentOrders.length > 0 ? (
+              <div className="space-y-4">
+                {stats.recentOrders.map((order) => (
+                  <div key={order._id.toString()} className="flex items-center justify-between border-b pb-2">
+                    <div>
+                      <p className="font-medium">{order.customerName}</p>
+                      <p className="text-sm text-gray-500">{order.deviceType}</p>
+                      <p className="text-xs text-gray-400">{order.trackingCode}</p>
+                    </div>
+                    <div>
+                      <span
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          order.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : order.status === "in_progress"
+                              ? "bg-blue-100 text-blue-800"
+                              : order.status === "completed"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {order.status === "pending"
+                          ? "Chờ xử lý"
+                          : order.status === "in_progress"
+                            ? "Đang sửa"
+                            : order.status === "completed"
+                              ? "Hoàn thành"
+                              : "Đã hủy"}
+                      </span>
+                      <Link
+                        href={`/admin/dashboard/orders/${order._id}`}
+                        className="block mt-1 text-xs text-blue-600 hover:underline"
+                      >
+                        Xem chi tiết
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center py-4 text-gray-500">Không có đơn sửa chữa nào</p>
+            )}
+            <div className="mt-4">
+              <Link href="/admin/dashboard/orders" className="text-sm text-blue-600 hover:underline">
+                Xem tất cả đơn sửa chữa
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="mt-6 overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2 font-medium">{t("admin.dashboard.table.order_id")}</th>
-                <th className="text-left p-2 font-medium">{t("admin.dashboard.table.customer")}</th>
-                <th className="text-left p-2 font-medium">{t("admin.dashboard.table.device")}</th>
-                <th className="text-left p-2 font-medium">{t("admin.dashboard.table.service")}</th>
-                <th className="text-left p-2 font-medium">{t("admin.dashboard.table.date")}</th>
-                <th className="text-left p-2 font-medium">{t("admin.dashboard.table.status")}</th>
-                <th className="text-right p-2 font-medium">{t("admin.dashboard.table.actions")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredOrders.length > 0 ? (
-                filteredOrders.map((order) => (
-                  <tr key={order.id} className="border-b hover:bg-gray-50">
-                    <td className="p-2 font-medium">{order.id}</td>
-                    <td className="p-2">{order.customerName}</td>
-                    <td className="p-2">{order.deviceType}</td>
-                    <td className="p-2">{order.service}</td>
-                    <td className="p-2">{order.date}</td>
-                    <td className="p-2">
-                      <Badge className={getStatusColor(order.status)} variant="outline">
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </Badge>
-                    </td>
-                    <td className="p-2 text-right">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/admin/dashboard/orders/${order.id}`}>{t("common.view")}</Link>
-                      </Button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={7} className="text-center p-8">
-                    {t("admin.dashboard.no_orders")}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle>Thông tin hệ thống</CardTitle>
+            <UsersIcon className="h-4 w-4 text-gray-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Tổng số người dùng:</span>
+                <span className="font-bold">{stats.totalUsers}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Phiên bản hệ thống:</span>
+                <span>1.0.0</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Trạng thái:</span>
+                <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                  Hoạt động
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
