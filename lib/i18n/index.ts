@@ -7,7 +7,7 @@ export const translations = {
   vi,
 }
 
-export type TranslationKey = keyof typeof en
+export type TranslationKey = keyof typeof vi
 export type NestedTranslationKey = string
 
 export function getTranslation(locale: Locale, key: string): string {
@@ -18,8 +18,8 @@ export function getTranslation(locale: Locale, key: string): string {
     if (value && typeof value === "object" && k in value) {
       value = value[k]
     } else {
-      // Fallback to English if key not found
-      value = translations.en
+      // Fallback to Vietnamese if key not found
+      value = translations.vi
       for (const fallbackKey of keys) {
         if (value && typeof value === "object" && fallbackKey in value) {
           value = value[fallbackKey]

@@ -29,6 +29,69 @@ export const en = {
     blog: "Blog",
     contact: "Contact",
     book_now: "Book Now",
+    open_menu: "Open menu",
+    close_menu: "Close menu",
+  },
+
+  // Contact page
+  contact: {
+    title: "Contact Us",
+    subtitle: "Have questions or need assistance? Get in touch with our team.",
+    info: {
+      title: "Contact Information",
+      subtitle: "Reach out to us through any of these channels",
+      phone: {
+        title: "Phone",
+        subtitle: "Call us for immediate assistance",
+      },
+      email: {
+        title: "Email",
+        subtitle: "Send us an email anytime",
+      },
+      address: {
+        title: "Address",
+        subtitle: "Visit our repair center",
+      },
+      hours: {
+        title: "Business Hours",
+        subtitle: "We're open",
+        weekdays: "Monday-Friday: 9AM-6PM",
+        weekend: "Saturday: 10AM-4PM",
+      },
+      social: {
+        title: "Social Media",
+        subtitle: "Follow us online",
+      },
+    },
+    form: {
+      title: "Send Us a Message",
+      subtitle: "Fill out the form below and we'll get back to you as soon as possible",
+      full_name: "Full Name",
+      full_name_placeholder: "John Doe",
+      email: "Email",
+      email_placeholder: "john@example.com",
+      phone: "Phone Number (Optional)",
+      phone_placeholder: "(123) 456-7890",
+      subject: "Subject",
+      subject_placeholder: "How can we help you?",
+      message: "Message",
+      message_placeholder: "Please provide details about your inquiry...",
+      submit: "Send Message",
+      submitting: "Sending...",
+    },
+    validation: {
+      name_min: "Full name must be at least 2 characters.",
+      email_invalid: "Please enter a valid email address.",
+      phone_min: "Phone number must be at least 10 digits.",
+      subject_min: "Subject must be at least 3 characters.",
+      message_min: "Message must be at least 10 characters.",
+    },
+    messages: {
+      success_title: "Message Sent",
+      success_description: "Thank you for contacting us. We'll respond as soon as possible.",
+      error_title: "Something went wrong",
+      error_description: "There was a problem sending your message. Please try again.",
+    },
   },
 
   // Home page
@@ -271,7 +334,7 @@ export const en = {
     repair_tips: "Repair Tips & Blog",
     contact_us: "Contact Us",
     find_us: "Find Us",
-    business_hours: "Mon-Fri: 9AM-6PM\nSat: 10AM-4PM",
+    business_hours: "Mon-Sat: 8AM-7PM\nSun: 9AM-6PM",
     copyright: "All rights reserved.",
   },
 }

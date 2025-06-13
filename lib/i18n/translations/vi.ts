@@ -29,6 +29,69 @@ export const vi = {
     blog: "Blog",
     contact: "Liên hệ",
     book_now: "Đặt ngay",
+    open_menu: "Mở menu",
+    close_menu: "Đóng menu",
+  },
+
+  // Contact page
+  contact: {
+    title: "Liên hệ với chúng tôi",
+    subtitle: "Bạn có câu hỏi hoặc cần hỗ trợ? Hãy liên hệ với đội ngũ của chúng tôi.",
+    info: {
+      title: "Thông tin liên hệ",
+      subtitle: "Liên hệ với chúng tôi qua các kênh sau",
+      phone: {
+        title: "Điện thoại",
+        subtitle: "Gọi cho chúng tôi để được hỗ trợ ngay",
+      },
+      email: {
+        title: "Email",
+        subtitle: "Gửi email cho chúng tôi bất cứ lúc nào",
+      },
+      address: {
+        title: "Địa chỉ",
+        subtitle: "Ghé thăm trung tâm sửa chữa của chúng tôi",
+      },
+      hours: {
+        title: "Giờ làm việc",
+        subtitle: "Chúng tôi mở cửa",
+        weekdays: "Thứ 2-6: 9AM-6PM",
+        weekend: "Thứ 7: 10AM-4PM",
+      },
+      social: {
+        title: "Mạng xã hội",
+        subtitle: "Theo dõi chúng tôi trực tuyến",
+      },
+    },
+    form: {
+      title: "Gửi tin nhắn cho chúng tôi",
+      subtitle: "Điền vào biểu mẫu dưới đây và chúng tôi sẽ liên hệ lại với bạn sớm nhất có thể",
+      full_name: "Họ và tên",
+      full_name_placeholder: "Nguyễn Văn A",
+      email: "Email",
+      email_placeholder: "nguyen@example.com",
+      phone: "Số điện thoại (Tùy chọn)",
+      phone_placeholder: "0123 456 789",
+      subject: "Tiêu đề",
+      subject_placeholder: "Chúng tôi có thể giúp gì cho bạn?",
+      message: "Tin nhắn",
+      message_placeholder: "Vui lòng cung cấp chi tiết về yêu cầu của bạn...",
+      submit: "Gửi tin nhắn",
+      submitting: "Đang gửi...",
+    },
+    validation: {
+      name_min: "Họ và tên phải có ít nhất 2 ký tự.",
+      email_invalid: "Vui lòng nhập địa chỉ email hợp lệ.",
+      phone_min: "Số điện thoại phải có ít nhất 10 chữ số.",
+      subject_min: "Tiêu đề phải có ít nhất 3 ký tự.",
+      message_min: "Tin nhắn phải có ít nhất 10 ký tự.",
+    },
+    messages: {
+      success_title: "Đã gửi tin nhắn",
+      success_description: "Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi sớm nhất có thể.",
+      error_title: "Đã xảy ra lỗi",
+      error_description: "Có vấn đề khi gửi tin nhắn của bạn. Vui lòng thử lại.",
+    },
   },
 
   // Home page
@@ -277,7 +340,7 @@ export const vi = {
     repair_tips: "Mẹo sửa chữa & Blog",
     contact_us: "Liên hệ với chúng tôi",
     find_us: "Tìm chúng tôi",
-    business_hours: "Thứ 2-6: 9AM-6PM\nThứ 7: 10AM-4PM",
+    business_hours: "Thứ 2-7: 08:00-19:00\nChủ nhật: 09:00-18:00",
     copyright: "Tất cả quyền được bảo lưu.",
   },
 }
