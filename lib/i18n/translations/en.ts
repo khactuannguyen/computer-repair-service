@@ -257,6 +257,22 @@ export const en = {
         description: "Once approved, we'll repair your device and notify you when it's ready",
       },
     },
+    confirmation: {
+      title: "Booking Confirmation",
+      thank_you: "Thank you for booking an appointment with LaptopSun!",
+      email_sent: "We've sent a confirmation email to your inbox with all the details of your appointment.",
+      contact_soon: "Our team will contact you shortly to confirm your appointment time.",
+      what_next: "What happens next?",
+      next_steps: {
+        check_email: "Check your email for booking confirmation details",
+        prepare: "Prepare information about your device issues for the appointment",
+        questions: "Feel free to contact us if you have any questions before your appointment",
+      },
+      buttons: {
+        home: "Return to Home",
+        services: "Browse Services",
+      },
+    },
     messages: {
       success_title: "Appointment Booked",
       success_description: "We've received your appointment request. Check your email for confirmation.",

@@ -10,21 +10,6 @@ interface ContactFormData {
 
 export async function sendContactEmail(formData: ContactFormData) {
   try {
-    // This is a placeholder for the actual email sending functionality
-    // In a real implementation, you would use an email service like Resend, Nodemailer, etc.
-
-    console.log("Sending email with data:", formData)
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // For demonstration purposes, we'll just return success
-    // In a real implementation, you would check the response from your email service
-    return {
-      success: true,
-      message: "Email sent successfully",
-    }
-
     // Example implementation with Nodemailer
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -36,7 +21,7 @@ export async function sendContactEmail(formData: ContactFormData) {
       },
     });
 
-    const mailOptions = {
+    /*const mailOptions = {
       from: process.env.SMTP_FROM_EMAIL,
       to: process.env.CONTACT_EMAIL,
       subject: `Contact Form: ${formData.subject}`,
@@ -57,8 +42,29 @@ export async function sendContactEmail(formData: ContactFormData) {
         <h3>Message:</h3>
         <p>${formData.message.replace(/\n/g, '<br>')}</p>
       `,
+    };*/
+    const mailOptions = {
+      from: process.env.SMTP_FROM_EMAIL,
+      to: process.env.CONTACT_EMAIL,
+      subject: `Liên hệ: ${formData.subject}`,
+      text: `
+      Họ tên: ${formData.fullName}
+      Email: ${formData.email}
+      Số điện thoại: ${formData.phone}
+      
+      Nội dung:
+      ${formData.message}
+      `,
+      html: `
+      <h2>Thông tin liên hệ mới</h2>
+      <p><strong>Họ tên:</strong> ${formData.fullName}</p>
+      <p><strong>Email:</strong> ${formData.email}</p>
+      <p><strong>Số điện thoại:</strong> ${formData.phone}</p>
+      <p><strong>Chủ đề:</strong> ${formData.subject}</p>
+      <h3>Nội dung:</h3>
+      <p>${formData.message.replace(/\n/g, "<br>")}</p>
+      `,
     };
-
     const info = await transporter.sendMail(mailOptions);
     return {
       success: true,

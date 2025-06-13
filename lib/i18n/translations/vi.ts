@@ -261,6 +261,22 @@ export const vi = {
         description: "Sau khi được phê duyệt, chúng tôi sẽ sửa chữa thiết bị và thông báo khi sẵn sàng",
       },
     },
+    confirmation: {
+      title: "Xác Nhận Đặt Lịch",
+      thank_you: "Cảm ơn bạn đã đặt lịch hẹn với LaptopSun!",
+      email_sent: "Chúng tôi đã gửi email xác nhận đến hộp thư của bạn với tất cả các chi tiết về cuộc hẹn.",
+      contact_soon: "Đội ngũ của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để xác nhận thời gian hẹn.",
+      what_next: "Các bước tiếp theo?",
+      next_steps: {
+        check_email: "Kiểm tra email của bạn để xem chi tiết xác nhận đặt lịch",
+        prepare: "Chuẩn bị thông tin về các vấn đề của thiết bị cho cuộc hẹn",
+        questions: "Hãy liên hệ với chúng tôi nếu bạn có bất kỳ câu hỏi nào trước cuộc hẹn",
+      },
+      buttons: {
+        home: "Trở về Trang Chủ",
+        services: "Xem Dịch Vụ",
+      },
+    },
     messages: {
       success_title: "Đã đặt lịch hẹn",
       success_description: "Chúng tôi đã nhận được yêu cầu đặt lịch hẹn của bạn. Kiểm tra email để xác nhận.",
