@@ -1,6 +1,6 @@
 "use server"
 
-import { login, logout } from "@/lib/auth/auth"
+import { login, logout, createDefaultAdmin } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 export async function loginAction(formData: FormData) {
@@ -9,23 +9,32 @@ export async function loginAction(formData: FormData) {
 
   if (!email || !password) {
     return {
+      success: false,
       error: "Email và mật khẩu là bắt buộc",
     }
   }
 
   try {
-    const user = await login(email, password)
+    // Ensure default admin exists
+    await createDefaultAdmin()
 
-    if (!user) {
+    const result = await login(email, password)
+
+    if (!result.success) {
       return {
-        error: "Email hoặc mật khẩu không đúng",
+        success: false,
+        error: result.error,
       }
     }
 
-    redirect("/admin/dashboard")
-  } catch (error) {
-    console.error("Login error:", error)
     return {
+      success: true,
+      user: result.user,
+    }
+  } catch (error) {
+    console.error("Login action error:", error)
+    return {
+      success: false,
       error: "Đã xảy ra lỗi khi đăng nhập",
     }
   }
