@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Phone, Mail, MapPin, Facebook } from "lucide-react"
-import { useTranslation } from "@/hooks/use-translation"
-import { cn } from "@/lib/utils"
+import { useState } from "react";
+import Link from "next/link";
+import { Phone, Mail, MapPin, Facebook } from "lucide-react";
+import { useTranslation } from "@/hooks/use-translation";
+import { cn } from "@/lib/utils";
 
 export default function ContactBar() {
-  const { t } = useTranslation()
-  const [isExpanded, setIsExpanded] = useState(false)
+  const { t } = useTranslation();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="bg-primary text-black">
@@ -16,11 +16,17 @@ export default function ContactBar() {
         {/* Desktop View */}
         <div className="hidden md:flex items-center justify-between py-2 text-sm">
           <div className="flex items-center space-x-6">
-            <Link href="tel:0857270270" className="flex items-center hover:opacity-80">
+            <Link
+              href="tel:0857270270"
+              className="flex items-center hover:opacity-80"
+            >
               <Phone className="h-4 w-4 mr-2" />
               <span>0857 270 270</span>
             </Link>
-            <Link href="mailto:support@laptopsun.vn" className="flex items-center hover:opacity-80">
+            <Link
+              href="mailto:support@laptopsun.vn"
+              className="flex items-center hover:opacity-80"
+            >
               <Mail className="h-4 w-4 mr-2" />
               <span>support@laptopsun.vn</span>
             </Link>
@@ -33,6 +39,10 @@ export default function ContactBar() {
               <MapPin className="h-4 w-4 mr-2" />
               <span>995 CMT8, Phường 7, Quận Tân Bình, TP.HCM</span>
             </Link>
+
+            <div className="flex items-center space-x-4">
+              <span>Giờ làm việc: T2-T7: 8:00-19:00</span>
+            </div>
           </div>
           <div className="flex items-center space-x-4">
             <Link
@@ -59,7 +69,11 @@ export default function ContactBar() {
         <div className="md:hidden">
           <div className="flex items-center justify-between py-2">
             <div className="flex items-center space-x-3">
-              <Link href="tel:0857270270" className="flex items-center" aria-label={t("contact.info.phone.title")}>
+              <Link
+                href="tel:0857270270"
+                className="flex items-center"
+                aria-label={t("contact.info.phone.title")}
+              >
                 <Phone className="h-4 w-4" />
               </Link>
               <Link
@@ -87,7 +101,11 @@ export default function ContactBar() {
               >
                 <Facebook className="h-4 w-4" />
               </Link>
-              <Link href="https://zalo.me/0857270270" target="_blank" rel="noopener noreferrer">
+              <Link
+                href="https://zalo.me/0857270270"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span className="font-bold text-xs">Zalo</span>
               </Link>
             </div>
@@ -98,7 +116,7 @@ export default function ContactBar() {
             id="mobile-contact-details"
             className={cn(
               "overflow-hidden transition-all duration-300 ease-in-out",
-              isExpanded ? "max-h-20 opacity-100 pb-2" : "max-h-0 opacity-0",
+              isExpanded ? "max-h-20 opacity-100 pb-2" : "max-h-0 opacity-0"
             )}
             aria-hidden={!isExpanded}
           >
@@ -113,12 +131,17 @@ export default function ContactBar() {
               </div>
               <div className="flex items-center">
                 <MapPin className="h-3 w-3 mr-1" />
-                <span className="truncate">995 CMT8, Phường 7, Quận Tân Bình, TP.HCM</span>
+                <span className="truncate">
+                  995 CMT8, Phường 7, Quận Tân Bình, TP.HCM
+                </span>
+              </div>
+              <div className="flex items-center">
+                <span>Giờ làm việc: T2-T7: 8:00-19:00</span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
