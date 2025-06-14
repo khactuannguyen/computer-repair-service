@@ -29,6 +29,7 @@ import {
   Eye,
   Filter,
 } from "lucide-react";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface Service {
   _id: string;
@@ -55,6 +56,7 @@ interface Service {
 export const dynamic = "force-dynamic";
 
 export default function AdminServicesPage() {
+  const { t, locale } = useTranslation();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -221,7 +223,9 @@ export default function AdminServicesPage() {
                           {service.isActive ? "Hoạt động" : "Tạm dừng"}
                         </Badge>
                         {service.isFeatured && (
-                          <Badge variant="outline">Nổi bật</Badge>
+                          <Badge variant="outline">
+                            {t("services.card.featured")}
+                          </Badge>
                         )}
                       </div>
                     </TableCell>

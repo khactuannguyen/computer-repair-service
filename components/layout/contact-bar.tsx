@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Phone, Mail, MapPin, Facebook } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Clock } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import { cn } from "@/lib/utils";
 
@@ -17,36 +17,42 @@ export default function ContactBar() {
         <div className="hidden md:flex items-center justify-between py-2 text-sm">
           <div className="flex items-center space-x-6">
             <Link
-              href="tel:0857270270"
+              href={`tel:${t("contact.info.phone.number")}`}
               className="flex items-center hover:opacity-80"
             >
               <Phone className="h-4 w-4 mr-2" />
-              <span>0857 270 270</span>
+              <span>{t("contact.info.phone.number")}</span>
             </Link>
             <Link
-              href="mailto:laptopsun.vn@gmail.com"
+              href={`mailto:${t("contact.info.email.address")}`}
               className="flex items-center hover:opacity-80"
             >
               <Mail className="h-4 w-4 mr-2" />
-              <span>laptopsun.vn@gmail.com</span>
+              <span>{t("contact.info.email.address")}</span>
             </Link>
             <Link
-              href="https://maps.app.goo.gl/Yx5Yx5Yx5Yx5Yx5Yx5"
+              href={t("contact.info.address.link")}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center hover:opacity-80"
             >
               <MapPin className="h-4 w-4 mr-2" />
-              <span>995 CMT8, Phường 7, Quận Tân Bình, TP.HCM</span>
+              <span>{t("contact.info.address.full")}</span>
             </Link>
 
-            <div className="flex items-center space-x-4">
-              <span>Giờ làm việc: T2-T7: 8:00-19:00</span>
+            <Clock className="mr-12 h-4 w-4" />
+            <div className="flex flex-col items-start space-y-0.5">
+              <span>
+                <p>
+                  {t("contact.info.hours.weekdays")}{" "}
+                  {t("contact.info.hours.sunday")}
+                </p>
+              </span>
             </div>
           </div>
           <div className="flex items-center space-x-4">
             <Link
-              href="https://www.facebook.com/laptopsun"
+              href={t("contact.info.facebook.link")}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:opacity-80"
@@ -55,7 +61,7 @@ export default function ContactBar() {
               <Facebook className="h-4 w-4" />
             </Link>
             <Link
-              href="https://zalo.me/0857270270"
+              href={t("contact.info.zalo.link")}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:opacity-80"
@@ -70,14 +76,14 @@ export default function ContactBar() {
           <div className="flex items-center justify-between py-2">
             <div className="flex items-center space-x-3">
               <Link
-                href="tel:0857270270"
+                href={`tel:${t("contact.info.phone.number")}`}
                 className="flex items-center"
                 aria-label={t("contact.info.phone.title")}
               >
                 <Phone className="h-4 w-4" />
               </Link>
               <Link
-                href="mailto:laptopsun.vn@gmail.com"
+                href={`mailto:${t("contact.info.email.address")}`}
                 className="flex items-center"
                 aria-label={t("contact.info.email.title")}
               >
@@ -94,7 +100,7 @@ export default function ContactBar() {
             </button>
             <div className="flex items-center space-x-3">
               <Link
-                href="https://www.facebook.com/laptopsun"
+                href={t("contact.info.facebook.link")}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -102,7 +108,7 @@ export default function ContactBar() {
                 <Facebook className="h-4 w-4" />
               </Link>
               <Link
-                href="https://zalo.me/0857270270"
+                href={t("contact.info.zalo.link")}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -116,27 +122,28 @@ export default function ContactBar() {
             id="mobile-contact-details"
             className={cn(
               "overflow-hidden transition-all duration-300 ease-in-out",
-              isExpanded ? "max-h-20 opacity-100 pb-2" : "max-h-0 opacity-0"
+              isExpanded ? "max-h-24 opacity-100 pb-2" : "max-h-0 opacity-0"
             )}
             aria-hidden={!isExpanded}
           >
             <div className="flex flex-col space-y-1 text-xs">
               <div className="flex items-center">
                 <Phone className="h-3 w-3 mr-1" />
-                <span>0857 270 270</span>
+                <span>{t("contact.info.phone.number")}</span>
               </div>
               <div className="flex items-center">
                 <Mail className="h-3 w-3 mr-1" />
-                <span>laptopsun.vn@gmail.com</span>
+                <span>{t("contact.info.email.address")}</span>
               </div>
               <div className="flex items-center">
                 <MapPin className="h-3 w-3 mr-1" />
                 <span className="truncate">
-                  995 CMT8, Phường 7, Quận Tân Bình, TP.HCM
+                  {t("contact.info.address.full")}
                 </span>
               </div>
-              <div className="flex items-center">
-                <span>Giờ làm việc: T2-T7: 8:00-19:00</span>
+              <div className="flex flex-col items-start">
+                <span>{t("contact.info.hours.weekdays")}</span>
+                <span>{t("contact.info.hours.sunday")}</span>
               </div>
             </div>
           </div>

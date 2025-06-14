@@ -28,7 +28,7 @@ export default function TrackOrderPage() {
 
   const handleSearch = async () => {
     if (!trackingCode.trim() || !phone.trim()) {
-      setError("Vui lòng nhập đầy đủ mã đơn hàng và số điện thoại");
+      setError(t("track_order.ui.error_required"));
       return;
     }
 
@@ -53,10 +53,10 @@ export default function TrackOrderPage() {
       if (data.success) {
         setOrder(data.order);
       } else {
-        setError(data.message || "Không tìm thấy đơn hàng");
+        setError(data.message || t("track_order.ui.error_not_found"));
       }
     } catch (err) {
-      setError("Có lỗi xảy ra khi tra cứu đơn hàng");
+      setError(t("track_order.ui.error_generic"));
     } finally {
       setLoading(false);
     }
@@ -80,13 +80,13 @@ export default function TrackOrderPage() {
   const getStatusText = (status: string) => {
     switch (status) {
       case "pending":
-        return "Chờ xử lý";
+        return t("track_order.ui.status.pending");
       case "in_progress":
-        return "Đang sửa chữa";
+        return t("track_order.ui.status.in_progress");
       case "completed":
-        return "Hoàn thành";
+        return t("track_order.ui.status.completed");
       case "cancelled":
-        return "Đã hủy";
+        return t("track_order.ui.status.cancelled");
       default:
         return status;
     }
@@ -112,11 +112,10 @@ export default function TrackOrderPage() {
       <div className="container mx-auto max-w-4xl px-4">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Tra cứu đơn sửa chữa
+            {t("track_order.ui.page_title")}
           </h1>
           <p className="text-gray-600">
-            Nhập mã đơn hàng và số điện thoại để kiểm tra trạng thái sửa chữa
-            của bạn
+            {t("track_order.ui.page_description")}
           </p>
         </div>
 
@@ -124,7 +123,7 @@ export default function TrackOrderPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Search className="h-5 w-5" />
-              Thông tin tra cứu
+              {t("track_order.ui.search_title")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -134,11 +133,11 @@ export default function TrackOrderPage() {
                   htmlFor="trackingCode"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Mã đơn hàng
+                  {t("track_order.ui.tracking_code_label")}
                 </label>
                 <Input
                   id="trackingCode"
-                  placeholder="VD: LPS-20240613-0001"
+                  placeholder={t("track_order.ui.tracking_code_placeholder")}
                   value={trackingCode}
                   onChange={(e) => setTrackingCode(e.target.value)}
                   className="uppercase"
@@ -149,11 +148,11 @@ export default function TrackOrderPage() {
                   htmlFor="phone"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Số điện thoại
+                  {t("track_order.ui.phone_label")}
                 </label>
                 <Input
                   id="phone"
-                  placeholder="VD: 0123456789"
+                  placeholder={t("track_order.ui.phone_placeholder")}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
@@ -171,7 +170,7 @@ export default function TrackOrderPage() {
               disabled={loading}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
             >
-              {loading ? "Đang tra cứu..." : "Tra cứu đơn hàng"}
+              {loading ? t("track_order.ui.searching") : t("track_order.ui.search_button")}
             </Button>
           </CardContent>
         </Card>
@@ -180,7 +179,7 @@ export default function TrackOrderPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span>Thông tin đơn hàng</span>
+                <span>{t("track_order.ui.order_info_title")}</span>
                 <Badge className={getStatusColor(order.status)}>
                   <span className="flex items-center gap-1">
                     {getStatusIcon(order.status)}
@@ -193,23 +192,23 @@ export default function TrackOrderPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-3">
-                    Thông tin cơ bản
+                    {t("track_order.ui.basic_info")}
                   </h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Mã đơn hàng:</span>
+                      <span className="text-gray-600">{t("track_order.ui.order_code")}</span>
                       <span className="font-medium">{order.trackingCode}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Khách hàng:</span>
+                      <span className="text-gray-600">{t("track_order.ui.customer")}</span>
                       <span className="font-medium">{order.customerName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Thiết bị:</span>
+                      <span className="text-gray-600">{t("track_order.ui.device")}</span>
                       <span className="font-medium">{order.deviceType}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Ngày tạo:</span>
+                      <span className="text-gray-600">{t("track_order.ui.created_at")}</span>
                       <span className="font-medium">
                         {new Date(order.createdAt).toLocaleDateString("vi-VN")}
                       </span>
@@ -219,7 +218,7 @@ export default function TrackOrderPage() {
 
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-3">
-                    Tiến độ sửa chữa
+                    {t("track_order.ui.progress_title")}
                   </h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
@@ -227,9 +226,9 @@ export default function TrackOrderPage() {
                         <CheckCircle className="h-4 w-4 text-green-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Đã tiếp nhận</p>
+                        <p className="text-sm font-medium">{t("track_order.ui.received")}</p>
                         <p className="text-xs text-gray-500">
-                          Đơn hàng đã được tạo
+                          {t("track_order.ui.received_desc")}
                         </p>
                       </div>
                     </div>
@@ -251,9 +250,9 @@ export default function TrackOrderPage() {
                         />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Đang sửa chữa</p>
+                        <p className="text-sm font-medium">{t("track_order.ui.repairing")}</p>
                         <p className="text-xs text-gray-500">
-                          Kỹ thuật viên đang xử lý
+                          {t("track_order.ui.repairing_desc")}
                         </p>
                       </div>
                     </div>
@@ -275,9 +274,9 @@ export default function TrackOrderPage() {
                         />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Hoàn thành</p>
+                        <p className="text-sm font-medium">{t("track_order.ui.done")}</p>
                         <p className="text-xs text-gray-500">
-                          Sẵn sàng giao cho khách hàng
+                          {t("track_order.ui.done_desc")}
                         </p>
                       </div>
                     </div>
@@ -288,7 +287,7 @@ export default function TrackOrderPage() {
               {order.estimatedCompletionDate && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <h4 className="font-semibold text-blue-900 mb-1">
-                    Thời gian dự kiến hoàn thành
+                    {t("track_order.ui.estimated_completion")}
                   </h4>
                   <p className="text-blue-700">
                     {new Date(order.estimatedCompletionDate).toLocaleDateString(
@@ -300,12 +299,12 @@ export default function TrackOrderPage() {
 
               <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
                 <h4 className="font-semibold text-primary mb-2">
-                  Lưu ý quan trọng
+                  {t("track_order.ui.important_notes")}
                 </h4>
                 <ul className="text-primary text-sm space-y-1">
-                  <li>• Vui lòng mang theo mã đơn hàng khi đến nhận máy</li>
-                  <li>• Liên hệ hotline nếu có thắc mắc về tiến độ sửa chữa</li>
-                  <li>• Đơn hàng được bảo hành theo chính sách của cửa hàng</li>
+                  <li>{t("track_order.ui.note_1")}</li>
+                  <li>{t("track_order.ui.note_2")}</li>
+                  <li>{t("track_order.ui.note_3")}</li>
                 </ul>
               </div>
             </CardContent>

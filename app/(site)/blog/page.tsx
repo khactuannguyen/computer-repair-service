@@ -78,7 +78,7 @@ export default function BlogPage() {
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Đang tải bài viết...</p>
+            <p className="mt-4 text-gray-600">{t("common.loading")}</p>
           </div>
         </div>
       </div>
@@ -104,7 +104,7 @@ export default function BlogPage() {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Tìm kiếm bài viết..."
+                placeholder={t("blog.search_placeholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -119,7 +119,7 @@ export default function BlogPage() {
                   : "hover:text-primary hover:border-primary/50"
               }
             >
-              Tất cả
+              {t("blog.all_posts")}
             </Button>
           </div>
 
@@ -184,7 +184,7 @@ export default function BlogPage() {
                 <CardHeader>
                   <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
                     <Calendar className="h-4 w-4" />
-                    {new Date(post.publishedAt).toLocaleDateString("vi-VN")}
+                    {new Date(post.publishedAt).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US")}
                     <User className="h-4 w-4 ml-2" />
                     {post.author.name}
                   </div>
@@ -217,7 +217,7 @@ export default function BlogPage() {
                         size="sm"
                         className="text-primary hover:text-primary/80"
                       >
-                        Đọc thêm
+                        {t("blog.read_more")}
                         <ArrowRight className="h-4 w-4 ml-1" />
                       </Button>
                     </Link>
@@ -232,10 +232,10 @@ export default function BlogPage() {
               <Search className="h-16 w-16 mx-auto" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Không tìm thấy bài viết
+              {t("blog.no_posts")}
             </h3>
             <p className="text-gray-600">
-              Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
+              {t("blog.search_placeholder")}
             </p>
           </div>
         )}

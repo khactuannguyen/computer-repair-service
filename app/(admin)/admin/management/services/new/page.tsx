@@ -20,10 +20,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
+import { useTranslation } from "@/hooks/use-translation";
 
 export const dynamic = "force-dynamic";
 
 export default function NewServicePage() {
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -387,7 +389,9 @@ export default function NewServicePage() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="is-featured">Nổi bật</Label>
+                  <Label htmlFor="is-featured">
+                    {t("services.form.isFeatured")}
+                  </Label>
                   <Switch
                     id="is-featured"
                     checked={formData.isFeatured}

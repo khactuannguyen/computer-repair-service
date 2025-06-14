@@ -179,7 +179,9 @@ export default function ServicesPage() {
                     </div>
                   </div>
                   {service.isFeatured && (
-                    <Badge className="mt-2 w-fit">Nổi bật</Badge>
+                    <Badge className="mt-2 w-fit">
+                      {t("services.card.featured")}
+                    </Badge>
                   )}
                 </CardContent>
                 <CardFooter className="border-t p-6 pt-4">
