@@ -1,49 +1,46 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Menu, X, Phone, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { LanguageSwitcher } from "@/components/ui/language-switcher";
-import { useTranslation } from "@/hooks/use-translation";
-import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { Menu, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { LanguageSwitcher } from "@/components/ui/language-switcher"
+import { useTranslation } from "@/hooks/use-translation"
+import { cn } from "@/lib/utils"
+import { usePathname } from "next/navigation"
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const { t } = useTranslation();
-  const pathname = usePathname();
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const { t } = useTranslation()
+  const pathname = usePathname()
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
+      setScrolled(window.scrollY > 10)
+    }
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target as Node)
-      ) {
-        setMobileMenuOpen(false);
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setMobileMenuOpen(false)
       }
-    };
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll)
+    document.addEventListener("mousedown", handleClickOutside)
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      window.removeEventListener("scroll", handleScroll)
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   // Close mobile menu when route changes
   useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
+    setMobileMenuOpen(false)
+  }, [pathname])
 
   const navigation = [
     { name: t("nav.home"), href: "/" },
@@ -51,19 +48,16 @@ export default function Header() {
     { name: t("nav.book_appointment"), href: "/book-appointment" },
     { name: t("nav.blog"), href: "/blog" },
     { name: t("nav.contact"), href: "/contact" },
-  ];
+  ]
 
   return (
     <header
       className={cn(
         "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-        scrolled && "shadow-sm"
+        scrolled && "shadow-sm",
       )}
     >
-      <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8"
-        aria-label="Global"
-      >
+      <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8" aria-label="Global">
         {/* <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">LaptopSun</span>
@@ -87,21 +81,11 @@ export default function Header() {
             <span className="sr-only">LaptopSun</span>
             <div className="flex items-center gap-2">
               <div className="relative h-8 w-8 lg:h-10 lg:w-10">
-                <Image
-                  src="/laptopsun-logo.svg"
-                  alt="LaptopSun Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
+                <Image src="/laptopsun-logo.svg" alt="LaptopSun Logo" fill className="object-contain" priority />
               </div>
               <div className="flex flex-col">
-                <span className="text-lg lg:text-xl font-bold text-gray-900">
-                  LaptopSun
-                </span>
-                <span className="hidden lg:block text-xs text-gray-600">
-                  Nhanh chóng - Chuẩn xác - Đúng hẹn
-                </span>
+                <span className="text-lg lg:text-xl font-bold text-gray-900">LaptopSun</span>
+                <span className="hidden lg:block text-xs text-gray-600">Nhanh chóng - Chuẩn xác - Đúng hẹn</span>
               </div>
             </div>
           </Link>
@@ -115,9 +99,7 @@ export default function Header() {
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
           >
-            <span className="sr-only">
-              {mobileMenuOpen ? t("nav.close_menu") : t("nav.open_menu")}
-            </span>
+            <span className="sr-only">{mobileMenuOpen ? t("nav.close_menu") : t("nav.open_menu")}</span>
             <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
@@ -128,18 +110,21 @@ export default function Header() {
               href={item.href}
               className={cn(
                 "text-sm font-semibold leading-6 transition-colors",
-                pathname === item.href
-                  ? "text-primary"
-                  : "text-foreground hover:text-primary"
+                pathname === item.href ? "text-primary" : "text-foreground hover:text-primary",
               )}
             >
               {item.name}
             </Link>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4 lg:items-center">
           <LanguageSwitcher />
-          <Button asChild>
+          <Link href="/track-order">
+            <Button variant="outline" size="sm" className="border-yellow-500 text-yellow-600 hover:bg-yellow-50">
+              Tra cứu đơn hàng
+            </Button>
+          </Link>
+          <Button asChild className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold">
             <Link href="/book-appointment">{t("nav.book_now")}</Link>
           </Button>
         </div>
@@ -149,7 +134,7 @@ export default function Header() {
       <div
         className={cn(
           "fixed inset-0 z-50 bg-black/20 backdrop-blur-sm transition-opacity lg:hidden",
-          mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
         aria-hidden={!mobileMenuOpen}
       >
@@ -158,24 +143,15 @@ export default function Header() {
           id="mobile-menu"
           className={cn(
             "fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 transition-transform",
-            mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+            mobileMenuOpen ? "translate-x-0" : "translate-x-full",
           )}
         >
           <div className="flex items-center justify-between">
-            <Link
-              href="/"
-              className="-m-1.5 p-1.5"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link href="/" className="-m-1.5 p-1.5" onClick={() => setMobileMenuOpen(false)}>
               <span className="sr-only">LaptopSun</span>
               <div className="flex items-center gap-2">
                 <div className="relative h-8 w-8">
-                  <Image
-                    src="/laptopsun-logo.png"
-                    alt="LaptopSun Logo"
-                    fill
-                    className="object-contain"
-                  />
+                  <Image src="/laptopsun-logo.png" alt="LaptopSun Logo" fill className="object-contain" />
                 </div>
                 <span className="text-xl font-bold">LaptopSun</span>
               </div>
@@ -198,23 +174,24 @@ export default function Header() {
                     href={item.href}
                     className={cn(
                       "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 transition-colors",
-                      pathname === item.href
-                        ? "bg-primary/10 text-primary"
-                        : "text-foreground hover:bg-muted"
+                      pathname === item.href ? "bg-yellow-50 text-yellow-600" : "text-gray-900 hover:bg-gray-50",
                     )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}
                   </Link>
                 ))}
+                <Link
+                  href="/track-order"
+                  className="block -mx-3 rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Tra cứu đơn hàng
+                </Link>
               </div>
               <div className="py-6 space-y-4">
-                <LanguageSwitcher />
-                <Button asChild className="w-full">
-                  <Link
-                    href="/book-appointment"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
+                <Button asChild className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold">
+                  <Link href="/book-appointment" onClick={() => setMobileMenuOpen(false)}>
                     {t("nav.book_now")}
                   </Link>
                 </Button>
@@ -224,5 +201,5 @@ export default function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }

@@ -27,7 +27,18 @@ const config = {
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "#FACC15", // Yellow brand color
-          foreground: "hsl(var(--primary-foreground))",
+          50: "#fefce8",
+          100: "#fef9c3",
+          200: "#fef08a",
+          300: "#fde047",
+          400: "#FACC15", // Main brand color
+          500: "#eab308",
+          600: "#ca8a04",
+          700: "#a16207",
+          800: "#854d0e",
+          900: "#713f12",
+          950: "#422006",
+          foreground: "#000000", // Black text on yellow background
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
