@@ -12,7 +12,6 @@ export default async function AdminDashboardLayout({
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminSidebar user={{ name: session.name as string, role: session.role as string }} />
-
       <div className="lg:pl-64">
         <main className="py-10">
           <div className="px-4 sm:px-6 lg:px-8">{children}</div>
