@@ -75,6 +75,8 @@ async function getOrders(searchParams: SearchParams) {
   })) as OrderRow[];
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function OrdersPage({
   searchParams,
 }: {

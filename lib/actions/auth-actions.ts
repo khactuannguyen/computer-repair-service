@@ -1,6 +1,6 @@
 "use server"
 
-import { login, logout, createDefaultAdmin } from "@/lib/auth/auth"
+import { login, createDefaultAdmin } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 export async function loginAction(formData: FormData) {
@@ -41,6 +41,5 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function logoutAction() {
-  await logout()
   redirect("/admin/login")
 }

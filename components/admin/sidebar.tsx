@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { LayoutDashboard, Package, Users, Settings, LogOut, Menu, X } from "lucide-react"
 import Image from "next/image"
-import { logout } from "@/lib/auth/auth"
 
 interface AdminSidebarProps {
   user: {
@@ -30,7 +29,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
 
   const handleLogout = async () => {
     try {
-      await logout()
+      await fetch("/api/logout", { method: "POST" })
       router.push("/admin/login")
       router.refresh()
     } catch (error) {

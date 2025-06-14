@@ -83,9 +83,7 @@ console.log("Connected to database for login")
   }
 }
 
-export async function logout() {
-  cookies().delete("auth-token")
-}
+// Remove logout export or mark as server-only if needed
 
 export async function getSession() {
   try {
