@@ -34,7 +34,9 @@ export async function verifyJWT(token: string) {
 
 export async function login(email: string, password: string) {
   try {
+    console.log("Attempting to log in user:", email)
     await connectToDatabase()
+console.log("Connected to database for login")
 
     const user = await User.findOne({ email }).select("+password")
     if (!user) {
@@ -48,6 +50,7 @@ export async function login(email: string, password: string) {
       return { success: false, error: "Email hoặc mật khẩu không đúng" }
     }
 
+      console.log("User logged in:", user.email)
     // Create a JWT token
     const token = await signJWT({
       id: user._id.toString(),

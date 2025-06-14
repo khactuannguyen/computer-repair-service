@@ -24,11 +24,11 @@ export default function ContactBar() {
               <span>0857 270 270</span>
             </Link>
             <Link
-              href="mailto:support@laptopsun.vn"
+              href="mailto:laptopsun.vn@gmail.com"
               className="flex items-center hover:opacity-80"
             >
               <Mail className="h-4 w-4 mr-2" />
-              <span>support@laptopsun.vn</span>
+              <span>laptopsun.vn@gmail.com</span>
             </Link>
             <Link
               href="https://maps.app.goo.gl/Yx5Yx5Yx5Yx5Yx5Yx5"
@@ -77,7 +77,7 @@ export default function ContactBar() {
                 <Phone className="h-4 w-4" />
               </Link>
               <Link
-                href="mailto:support@laptopsun.vn"
+                href="mailto:laptopsun.vn@gmail.com"
                 className="flex items-center"
                 aria-label={t("contact.info.email.title")}
               >
@@ -127,7 +127,7 @@ export default function ContactBar() {
               </div>
               <div className="flex items-center">
                 <Mail className="h-3 w-3 mr-1" />
-                <span>support@laptopsun.vn</span>
+                <span>laptopsun.vn@gmail.com</span>
               </div>
               <div className="flex items-center">
                 <MapPin className="h-3 w-3 mr-1" />

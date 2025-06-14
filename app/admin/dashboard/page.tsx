@@ -1,21 +1,34 @@
-import { checkAuth } from "@/lib/auth/auth"
-import connectToDatabase from "@/lib/db/mongodb"
-import RepairOrder from "@/lib/db/models/RepairOrder"
-import User from "@/lib/db/models/User"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { PenToolIcon as Tool, CheckCircle, Clock, AlertCircle, UsersIcon } from "lucide-react"
-import Link from "next/link"
+import { checkAuth } from "@/lib/auth/auth";
+import connectToDatabase from "@/lib/db/mongodb";
+import RepairOrder from "@/lib/db/models/RepairOrder";
+import User from "@/lib/db/models/User";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  PenToolIcon as Tool,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  UsersIcon,
+} from "lucide-react";
+import Link from "next/link";
 
 async function getStats() {
-  await connectToDatabase()
+  await connectToDatabase();
 
-  const totalOrders = await RepairOrder.countDocuments()
-  const pendingOrders = await RepairOrder.countDocuments({ status: "pending" })
-  const inProgressOrders = await RepairOrder.countDocuments({ status: "in_progress" })
-  const completedOrders = await RepairOrder.countDocuments({ status: "completed" })
-  const totalUsers = await User.countDocuments()
+  const totalOrders = await RepairOrder.countDocuments();
+  const pendingOrders = await RepairOrder.countDocuments({ status: "pending" });
+  const inProgressOrders = await RepairOrder.countDocuments({
+    status: "in_progress",
+  });
+  const completedOrders = await RepairOrder.countDocuments({
+    status: "completed",
+  });
+  const totalUsers = await User.countDocuments();
 
-  const recentOrders = await RepairOrder.find().sort({ createdAt: -1 }).limit(5).lean()
+  const recentOrders = await RepairOrder.find()
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .lean();
 
   return {
     totalOrders,
@@ -24,12 +37,12 @@ async function getStats() {
     completedOrders,
     totalUsers,
     recentOrders,
-  }
+  };
 }
 
 export default async function AdminDashboardPage() {
-  await checkAuth()
-  const stats = await getStats()
+  await checkAuth();
+  const stats = await getStats();
 
   return (
     <div>
@@ -38,7 +51,9 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng đơn sửa chữa</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Tổng đơn sửa chữa
+            </CardTitle>
             <Tool className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
@@ -49,7 +64,9 @@ export default async function AdminDashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Đang chờ xử lý</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Đang chờ xử lý
+            </CardTitle>
             <Clock className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
@@ -90,11 +107,20 @@ export default async function AdminDashboardPage() {
             {stats.recentOrders.length > 0 ? (
               <div className="space-y-4">
                 {stats.recentOrders.map((order) => (
-                  <div key={order._id.toString()} className="flex items-center justify-between border-b pb-2">
+                  <div
+                    key={(
+                      order._id as string | number | { toString(): string }
+                    ).toString()}
+                    className="flex items-center justify-between border-b pb-2"
+                  >
                     <div>
                       <p className="font-medium">{order.customerName}</p>
-                      <p className="text-sm text-gray-500">{order.deviceType}</p>
-                      <p className="text-xs text-gray-400">{order.trackingCode}</p>
+                      <p className="text-sm text-gray-500">
+                        {order.deviceType}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {order.trackingCode}
+                      </p>
                     </div>
                     <div>
                       <span
@@ -102,19 +128,19 @@ export default async function AdminDashboardPage() {
                           order.status === "pending"
                             ? "bg-yellow-100 text-yellow-800"
                             : order.status === "in_progress"
-                              ? "bg-blue-100 text-blue-800"
-                              : order.status === "completed"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
+                            ? "bg-blue-100 text-blue-800"
+                            : order.status === "completed"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
                         }`}
                       >
                         {order.status === "pending"
                           ? "Chờ xử lý"
                           : order.status === "in_progress"
-                            ? "Đang sửa"
-                            : order.status === "completed"
-                              ? "Hoàn thành"
-                              : "Đã hủy"}
+                          ? "Đang sửa"
+                          : order.status === "completed"
+                          ? "Hoàn thành"
+                          : "Đã hủy"}
                       </span>
                       <Link
                         href={`/admin/dashboard/orders/${order._id}`}
@@ -127,10 +153,15 @@ export default async function AdminDashboardPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-center py-4 text-gray-500">Không có đơn sửa chữa nào</p>
+              <p className="text-center py-4 text-gray-500">
+                Không có đơn sửa chữa nào
+              </p>
             )}
             <div className="mt-4">
-              <Link href="/admin/dashboard/orders" className="text-sm text-blue-600 hover:underline">
+              <Link
+                href="/admin/dashboard/orders"
+                className="text-sm text-blue-600 hover:underline"
+              >
                 Xem tất cả đơn sửa chữa
               </Link>
             </div>
@@ -163,5 +194,5 @@ export default async function AdminDashboardPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

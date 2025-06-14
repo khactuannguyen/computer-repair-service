@@ -104,10 +104,10 @@ export default function Footer() {
               <li className="flex items-start">
                 <Mail className="mr-2 h-5 w-5 text-muted-foreground" />
                 <Link
-                  href="mailto:support@laptopsun.vn"
+                  href="mailto:laptopsun.vn@gmail.com"
                   className="text-sm text-muted-foreground hover:text-primary"
                 >
-                  support@laptopsun.vn
+                  laptopsun.vn@gmail.com
                 </Link>
               </li>
               <li className="flex items-start">

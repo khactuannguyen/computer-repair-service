@@ -1,30 +1,30 @@
-import { checkRole } from "@/lib/auth/auth"
-import connectToDatabase from "@/lib/db/mongodb"
-import User from "@/lib/db/models/User"
-import { createRepairOrder } from "@/lib/actions/repair-order-actions"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { checkRole } from "@/lib/auth/auth";
+import connectToDatabase from "@/lib/db/mongodb";
+import User from "@/lib/db/models/User";
+import { createRepairOrder } from "@/lib/actions/repair-order-actions";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 async function getTechnicians() {
-  await connectToDatabase()
+  await connectToDatabase();
 
   const technicians = await User.find({
     role: { $in: ["admin", "technician"] },
   })
     .select("_id name")
-    .lean()
+    .lean<{ _id: any; name: string }[]>();
 
   return technicians.map((tech) => ({
     id: tech._id.toString(),
     name: tech.name,
-  }))
+  }));
 }
 
 export default async function NewOrderPage() {
-  await checkRole(["admin", "receptionist"])
-  const technicians = await getTechnicians()
+  await checkRole(["admin", "receptionist"]);
+  const technicians = await getTechnicians();
 
   return (
     <div>
@@ -42,12 +42,20 @@ export default async function NewOrderPage() {
           <CardTitle>Thông tin đơn sửa chữa</CardTitle>
         </CardHeader>
         <CardContent>
-          <form action={createRepairOrder} className="space-y-6">
+          <form
+            action={async (formData: FormData) => {
+              await createRepairOrder(formData);
+            }}
+            className="space-y-6"
+          >
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Thông tin khách hàng</h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="customerName" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="customerName"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Tên khách hàng <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -59,7 +67,10 @@ export default async function NewOrderPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="customerPhone" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="customerPhone"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Số điện thoại <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -71,7 +82,10 @@ export default async function NewOrderPage() {
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="customerEmail"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Email
                   </label>
                   <input
@@ -88,7 +102,10 @@ export default async function NewOrderPage() {
               <h3 className="text-lg font-medium">Thông tin thiết bị</h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="deviceType" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="deviceType"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Loại thiết bị <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -107,7 +124,10 @@ export default async function NewOrderPage() {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="deviceBrand" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="deviceBrand"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Hãng sản xuất
                   </label>
                   <input
@@ -118,7 +138,10 @@ export default async function NewOrderPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="deviceModel" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="deviceModel"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Model
                   </label>
                   <input
@@ -129,7 +152,10 @@ export default async function NewOrderPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="serialNumber" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="serialNumber"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Số serial
                   </label>
                   <input
@@ -145,7 +171,10 @@ export default async function NewOrderPage() {
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Thông tin sửa chữa</h3>
               <div>
-                <label htmlFor="issueDescription" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="issueDescription"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Mô tả vấn đề <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -158,7 +187,10 @@ export default async function NewOrderPage() {
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="estimatedCost" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="estimatedCost"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Chi phí ước tính (VND)
                   </label>
                   <input
@@ -169,7 +201,10 @@ export default async function NewOrderPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="estimatedCompletionDate" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="estimatedCompletionDate"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Ngày hoàn thành dự kiến
                   </label>
                   <input
@@ -181,7 +216,10 @@ export default async function NewOrderPage() {
                 </div>
               </div>
               <div>
-                <label htmlFor="assignedTo" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="assignedTo"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Kỹ thuật viên phụ trách
                 </label>
                 <select
@@ -198,7 +236,10 @@ export default async function NewOrderPage() {
                 </select>
               </div>
               <div>
-                <label htmlFor="internalNotes" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="internalNotes"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Ghi chú nội bộ
                 </label>
                 <textarea
@@ -216,7 +257,10 @@ export default async function NewOrderPage() {
                   Hủy
                 </Button>
               </Link>
-              <Button type="submit" className="bg-yellow-500 hover:bg-yellow-600">
+              <Button
+                type="submit"
+                className="bg-yellow-500 hover:bg-yellow-600"
+              >
                 Tạo đơn sửa chữa
               </Button>
             </div>
@@ -224,5 +268,5 @@ export default async function NewOrderPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

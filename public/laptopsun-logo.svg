@@ -11,13 +11,13 @@
       }
 
       .cls-2 {
-        fill: #ffc907;
+        fill: #facc15;
       }
     </style>
   </defs>
   <g id="Main_Logo" data-name="Main Logo">
     <g>
-      <rect class="cls-2" width="363.59" height="363.59" rx="45" ry="45"/>
+      <rect class="cls-2" y="0" width="363.59" height="363.59" rx="45" ry="45"/>
       <g>
         <rect class="cls-1" x="256.81" y="231.28" width="46.21" height="7.71" rx="3.09" ry="3.09"/>
         <rect class="cls-1" x="60.57" y="231.28" width="46.11" height="7.71" rx="3.09" ry="3.09"/>

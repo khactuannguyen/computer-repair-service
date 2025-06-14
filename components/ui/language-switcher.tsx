@@ -1,43 +1,48 @@
-"use client"
+"use client";
 
-import { Globe, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useTranslation } from "@/hooks/use-translation"
-import { locales, localeNames } from "@/lib/i18n/config"
-import { useState, useRef, useEffect } from "react"
-import { cn } from "@/lib/utils"
+import { Globe, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/hooks/use-translation";
+import { locales, localeNames } from "@/lib/i18n/config";
+import { useState, useRef, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 export function LanguageSwitcher() {
-  const { locale, setLocale } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const { locale, setLocale } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="relative" ref={dropdownRef}>
       <Button
         variant="ghost"
         size="sm"
-        className="gap-2"
+        className="gap-2 hover:bg-primary/10 hover:text-primary"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-controls="language-dropdown"
       >
         <Globe className="h-4 w-4" />
         <span className="hidden sm:inline">{localeNames[locale]}</span>
-        <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+        <ChevronDown
+          className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")}
+        />
       </Button>
 
       {isOpen && (
@@ -49,12 +54,12 @@ export function LanguageSwitcher() {
             <button
               key={loc}
               onClick={() => {
-                setLocale(loc)
-                setIsOpen(false)
+                setLocale(loc);
+                setIsOpen(false);
               }}
               className={cn(
-                "w-full px-3 py-2 text-left text-sm hover:bg-accent first:rounded-t-md last:rounded-b-md",
-                locale === loc ? "bg-primary/10 text-primary font-medium" : "",
+                "w-full px-3 py-2 text-left text-sm hover:bg-primary/10 hover:text-primary first:rounded-t-md last:rounded-b-md transition-colors",
+                locale === loc ? "bg-primary/10 text-primary font-medium" : ""
               )}
             >
               {localeNames[loc]}
@@ -63,5 +68,5 @@ export function LanguageSwitcher() {
         </div>
       )}
     </div>
-  )
+  );
 }

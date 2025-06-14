@@ -16,7 +16,7 @@ export async function loginAction(formData: FormData) {
 
   try {
     // Ensure default admin exists
-    await createDefaultAdmin()
+    // await createDefaultAdmin()
 
     const result = await login(email, password)
 

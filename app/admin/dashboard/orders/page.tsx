@@ -1,102 +1,126 @@
-import { checkAuth } from "@/lib/auth/auth"
-import connectToDatabase from "@/lib/db/mongodb"
-import RepairOrder from "@/lib/db/models/RepairOrder"
-import User from "@/lib/db/models/User"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { PlusCircle } from "lucide-react"
+import { checkAuth } from "@/lib/auth/auth";
+import connectToDatabase from "@/lib/db/mongodb";
+import RepairOrder from "@/lib/db/models/RepairOrder";
+import User from "@/lib/db/models/User";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 
 interface SearchParams {
-  status?: string
-  search?: string
+  status?: string;
+  search?: string;
+}
+
+interface OrderRow {
+  id: string;
+  trackingCode: string;
+  customerName: string;
+  customerPhone: string;
+  deviceType: string;
+  deviceBrand?: string;
+  deviceModel?: string;
+  status: "pending" | "in_progress" | "completed" | "cancelled";
+  createdAt: Date;
+  technicianName: string | null;
 }
 
 async function getOrders(searchParams: SearchParams) {
-  await connectToDatabase()
+  await connectToDatabase();
 
-  const query: any = {}
+  const query: any = {};
 
   if (searchParams.status && searchParams.status !== "all") {
-    query.status = searchParams.status
+    query.status = searchParams.status;
   }
 
   if (searchParams.search) {
-    const searchRegex = new RegExp(searchParams.search, "i")
+    const searchRegex = new RegExp(searchParams.search, "i");
     query.$or = [
       { customerName: searchRegex },
       { customerPhone: searchRegex },
       { trackingCode: searchRegex },
       { deviceType: searchRegex },
-    ]
+    ];
   }
 
-  const orders = await RepairOrder.find(query).sort({ createdAt: -1 }).lean()
+  const orders = await RepairOrder.find(query).sort({ createdAt: -1 }).lean();
 
   // Get technicians for assigned orders
-  const technicianIds = orders.filter((order) => order.assignedTo).map((order) => order.assignedTo)
+  const technicianIds = orders
+    .filter((order) => order.assignedTo)
+    .map((order) => order.assignedTo);
 
   const technicians = await User.find({
     _id: { $in: technicianIds },
-  }).lean()
+  }).lean();
 
-  const technicianMap = technicians.reduce(
-    (acc, tech) => {
-      acc[tech._id.toString()] = tech.name
-      return acc
-    },
-    {} as Record<string, string>,
-  )
+  const technicianMap = technicians.reduce((acc, tech) => {
+    acc[(tech._id as any).toString()] = tech.name;
+    return acc;
+  }, {} as Record<string, string>);
 
   return orders.map((order) => ({
-    ...order,
-    technicianName: order.assignedTo ? technicianMap[order.assignedTo.toString()] : null,
-    id: order._id.toString(),
-  }))
+    id: (order._id as any).toString(),
+    trackingCode: order.trackingCode,
+    customerName: order.customerName,
+    customerPhone: order.customerPhone,
+    deviceType: order.deviceType,
+    deviceBrand: order.deviceBrand,
+    deviceModel: order.deviceModel,
+    status: order.status,
+    createdAt: order.createdAt,
+    technicianName: order.assignedTo
+      ? technicianMap[(order.assignedTo as any).toString()]
+      : null,
+  })) as OrderRow[];
 }
 
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams: SearchParams
+  searchParams: SearchParams;
 }) {
-  await checkAuth()
-  const orders = await getOrders(searchParams)
+  await checkAuth();
+  const orders = await getOrders(searchParams);
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case "in_progress":
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800";
       case "completed":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "cancelled":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   const getStatusText = (status: string) => {
     switch (status) {
       case "pending":
-        return "Chờ xử lý"
+        return "Chờ xử lý";
       case "in_progress":
-        return "Đang sửa"
+        return "Đang sửa";
       case "completed":
-        return "Hoàn thành"
+        return "Hoàn thành";
       case "cancelled":
-        return "Đã hủy"
+        return "Đã hủy";
       default:
-        return status
+        return status;
     }
-  }
+  };
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <h1 className="text-2xl font-bold">Đơn sửa chữa</h1>
-        <Button asChild className="mt-4 sm:mt-0 bg-yellow-400 hover:bg-yellow-500">
+        <Button
+          asChild
+          className="mt-4 sm:mt-0 bg-yellow-400 hover:bg-yellow-500"
+        >
           <Link href="/admin/dashboard/orders/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Tạo đơn mới
@@ -197,10 +221,14 @@ export default async function OrdersPage({
                       {order.deviceBrand && ` - ${order.deviceBrand}`}
                       {order.deviceModel && ` ${order.deviceModel}`}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.technicianName || "-"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {order.technicianName || "-"}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusBadgeClass(order.status)}`}
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusBadgeClass(
+                          order.status
+                        )}`}
                       >
                         {getStatusText(order.status)}
                       </span>
@@ -220,7 +248,10 @@ export default async function OrdersPage({
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-4 text-center text-sm text-gray-500"
+                  >
                     Không tìm thấy đơn sửa chữa nào
                   </td>
                 </tr>
@@ -230,5 +261,5 @@ export default async function OrdersPage({
         </div>
       </div>
     </div>
-  )
+  );
 }

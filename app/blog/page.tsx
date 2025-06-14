@@ -1,74 +1,76 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search, Calendar, User, ArrowRight } from "lucide-react"
-import { useTranslation } from "@/hooks/use-translation"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, Calendar, User, ArrowRight } from "lucide-react";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface BlogPost {
-  _id: string
+  _id: string;
   title: {
-    vi: string
-    en: string
-  }
-  slug: string
+    vi: string;
+    en: string;
+  };
+  slug: string;
   excerpt: {
-    vi: string
-    en: string
-  }
-  coverImageUrl?: string
-  tags: string[]
-  publishedAt: string
+    vi: string;
+    en: string;
+  };
+  coverImageUrl?: string;
+  tags: string[];
+  publishedAt: string;
   author: {
-    name: string
-  }
+    name: string;
+  };
 }
 
 export default function BlogPage() {
-  const { t, locale } = useTranslation()
-  const [posts, setPosts] = useState<BlogPost[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedTag, setSelectedTag] = useState("")
+  const { t, locale } = useTranslation();
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
 
   useEffect(() => {
-    fetchPosts()
-  }, [])
+    fetchPosts();
+  }, []);
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/blog")
-      const data = await response.json()
+      const response = await fetch("/api/blog");
+      const data = await response.json();
       if (data.success) {
-        setPosts(data.posts)
+        setPosts(data.posts);
       }
     } catch (error) {
-      console.error("Error fetching posts:", error)
+      console.error("Error fetching posts:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const filteredPosts = posts.filter((post) => {
-    const title = post.title[locale as keyof typeof post.title] || post.title.vi
-    const excerpt = post.excerpt[locale as keyof typeof post.excerpt] || post.excerpt.vi
+    const title =
+      post.title[locale as keyof typeof post.title] || post.title.vi;
+    const excerpt =
+      post.excerpt[locale as keyof typeof post.excerpt] || post.excerpt.vi;
 
     const matchesSearch = searchTerm
       ? title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         excerpt.toLowerCase().includes(searchTerm.toLowerCase())
-      : true
+      : true;
 
-    const matchesTag = selectedTag ? post.tags.includes(selectedTag) : true
+    const matchesTag = selectedTag ? post.tags.includes(selectedTag) : true;
 
-    return matchesSearch && matchesTag
-  })
+    return matchesSearch && matchesTag;
+  });
 
-  const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
+  const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)));
 
   if (loading) {
     return (
@@ -80,7 +82,7 @@ export default function BlogPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -88,8 +90,12 @@ export default function BlogPage() {
       <div className="container mx-auto max-w-6xl px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{t("blog.title")}</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">{t("blog.subtitle")}</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            {t("blog.title")}
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            {t("blog.subtitle")}
+          </p>
         </div>
 
         {/* Search and Filter */}
@@ -107,7 +113,11 @@ export default function BlogPage() {
             <Button
               variant={selectedTag ? "default" : "outline"}
               onClick={() => setSelectedTag("")}
-              className={selectedTag ? "" : "bg-yellow-500 hover:bg-yellow-600"}
+              className={
+                selectedTag
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "hover:text-primary hover:border-primary/50"
+              }
             >
               Tất cả
             </Button>
@@ -121,7 +131,9 @@ export default function BlogPage() {
                   key={tag}
                   variant={selectedTag === tag ? "default" : "outline"}
                   className={`cursor-pointer ${
-                    selectedTag === tag ? "bg-yellow-500 hover:bg-yellow-600" : "hover:bg-yellow-100"
+                    selectedTag === tag
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "hover:bg-primary/10 text-primary"
                   }`}
                   onClick={() => setSelectedTag(selectedTag === tag ? "" : tag)}
                 >
@@ -136,19 +148,29 @@ export default function BlogPage() {
         {filteredPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.map((post) => (
-              <Card key={post._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <Card
+                key={post._id}
+                className="overflow-hidden hover:shadow-lg transition-shadow"
+              >
                 <div className="aspect-video relative bg-gray-200">
                   {post.coverImageUrl ? (
                     <Image
                       src={post.coverImageUrl || "/placeholder.svg"}
-                      alt={post.title[locale as keyof typeof post.title] || post.title.vi}
+                      alt={
+                        post.title[locale as keyof typeof post.title] ||
+                        post.title.vi
+                      }
                       fill
                       className="object-cover"
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-gray-400">
-                        <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                        <svg
+                          className="w-12 h-12"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
                           <path
                             fillRule="evenodd"
                             d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
@@ -167,12 +189,14 @@ export default function BlogPage() {
                     {post.author.name}
                   </div>
                   <h3 className="text-xl font-semibold line-clamp-2">
-                    {post.title[locale as keyof typeof post.title] || post.title.vi}
+                    {post.title[locale as keyof typeof post.title] ||
+                      post.title.vi}
                   </h3>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 line-clamp-3 mb-4">
-                    {post.excerpt[locale as keyof typeof post.excerpt] || post.excerpt.vi}
+                    {post.excerpt[locale as keyof typeof post.excerpt] ||
+                      post.excerpt.vi}
                   </p>
                   <div className="flex items-center justify-between">
                     <div className="flex flex-wrap gap-1">
@@ -188,7 +212,11 @@ export default function BlogPage() {
                       )}
                     </div>
                     <Link href={`/blog/${post.slug}`}>
-                      <Button variant="ghost" size="sm" className="text-yellow-600 hover:text-yellow-700">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-primary hover:text-primary/80"
+                      >
                         Đọc thêm
                         <ArrowRight className="h-4 w-4 ml-1" />
                       </Button>
@@ -203,21 +231,34 @@ export default function BlogPage() {
             <div className="text-gray-400 mb-4">
               <Search className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Không tìm thấy bài viết</h3>
-            <p className="text-gray-600">Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Không tìm thấy bài viết
+            </h3>
+            <p className="text-gray-600">
+              Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
+            </p>
           </div>
         )}
 
         {/* Newsletter Subscription */}
         <div className="mt-16 bg-white rounded-lg shadow-sm p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("blog.newsletter.title")}</h2>
-          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">{t("blog.newsletter.description")}</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            {t("blog.newsletter.title")}
+          </h2>
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+            {t("blog.newsletter.description")}
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <Input placeholder={t("blog.newsletter.email_placeholder")} className="flex-1" />
-            <Button className="bg-yellow-500 hover:bg-yellow-600">{t("blog.newsletter.subscribe")}</Button>
+            <Input
+              placeholder={t("blog.newsletter.email_placeholder")}
+              className="flex-1"
+            />
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              {t("blog.newsletter.subscribe")}
+            </Button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
