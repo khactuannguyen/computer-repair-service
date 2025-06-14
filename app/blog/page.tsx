@@ -1,83 +1,220 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import Link from "next/link"
 import Image from "next/image"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { blogPosts } from "@/lib/blog-data"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Search, Calendar, User, ArrowRight } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
 
+interface BlogPost {
+  _id: string
+  title: {
+    vi: string
+    en: string
+  }
+  slug: string
+  excerpt: {
+    vi: string
+    en: string
+  }
+  coverImageUrl?: string
+  tags: string[]
+  publishedAt: string
+  author: {
+    name: string
+  }
+}
+
 export default function BlogPage() {
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
+  const [posts, setPosts] = useState<BlogPost[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedTag, setSelectedTag] = useState("")
+
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch("/api/blog")
+      const data = await response.json()
+      if (data.success) {
+        setPosts(data.posts)
+      }
+    } catch (error) {
+      console.error("Error fetching posts:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const filteredPosts = posts.filter((post) => {
+    const title = post.title[locale as keyof typeof post.title] || post.title.vi
+    const excerpt = post.excerpt[locale as keyof typeof post.excerpt] || post.excerpt.vi
+
+    const matchesSearch = searchTerm
+      ? title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+      : true
+
+    const matchesTag = selectedTag ? post.tags.includes(selectedTag) : true
+
+    return matchesSearch && matchesTag
+  })
+
+  const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12">
+        <div className="container mx-auto max-w-6xl px-4">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Đang tải bài viết...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-3xl text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{t("blog.title")}</h1>
-        <p className="mt-4 text-lg text-muted-foreground">{t("blog.subtitle")}</p>
-      </div>
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="container mx-auto max-w-6xl px-4">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{t("blog.title")}</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">{t("blog.subtitle")}</p>
+        </div>
 
-      <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {blogPosts.map((post) => (
-          <Card key={post.id} className="flex flex-col overflow-hidden">
-            <div className="relative h-48 w-full">
-              <Image
-                src={post.image || "/placeholder.svg?height=200&width=400"}
-                alt={post.title}
-                fill
-                className="object-cover"
+        {/* Search and Filter */}
+        <div className="mb-8 space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Tìm kiếm bài viết..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
               />
             </div>
-            <CardContent className="flex-1 p-6">
-              <div className="flex flex-wrap gap-2">
-                {post.categories.map((category) => (
-                  <Badge key={category} variant="secondary">
-                    {category}
-                  </Badge>
-                ))}
-              </div>
-              <h2 className="mt-4 text-xl font-bold">{post.title}</h2>
-              <p className="mt-2 text-muted-foreground">{post.excerpt}</p>
-            </CardContent>
-            <CardFooter className="border-t p-6 pt-4">
-              <div className="flex w-full items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="relative h-8 w-8 overflow-hidden rounded-full">
+            <Button
+              variant={selectedTag ? "default" : "outline"}
+              onClick={() => setSelectedTag("")}
+              className={selectedTag ? "" : "bg-yellow-500 hover:bg-yellow-600"}
+            >
+              Tất cả
+            </Button>
+          </div>
+
+          {/* Tags */}
+          {allTags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {allTags.map((tag) => (
+                <Badge
+                  key={tag}
+                  variant={selectedTag === tag ? "default" : "outline"}
+                  className={`cursor-pointer ${
+                    selectedTag === tag ? "bg-yellow-500 hover:bg-yellow-600" : "hover:bg-yellow-100"
+                  }`}
+                  onClick={() => setSelectedTag(selectedTag === tag ? "" : tag)}
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Blog Posts Grid */}
+        {filteredPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post) => (
+              <Card key={post._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="aspect-video relative bg-gray-200">
+                  {post.coverImageUrl ? (
                     <Image
-                      src={post.authorImage || "/placeholder.svg?height=32&width=32"}
-                      alt={post.author}
+                      src={post.coverImageUrl || "/placeholder.svg"}
+                      alt={post.title[locale as keyof typeof post.title] || post.title.vi}
                       fill
                       className="object-cover"
                     />
-                  </div>
-                  <span className="text-sm font-medium">{post.author}</span>
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-gray-400">
+                        <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <span className="text-sm text-muted-foreground">{post.date}</span>
-              </div>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      <div className="mt-16 rounded-lg bg-muted p-8">
-        <div className="grid gap-8 md:grid-cols-2">
-          <div>
-            <h2 className="text-2xl font-bold">{t("blog.newsletter.title")}</h2>
-            <p className="mt-4 text-muted-foreground">{t("blog.newsletter.description")}</p>
+                <CardHeader>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(post.publishedAt).toLocaleDateString("vi-VN")}
+                    <User className="h-4 w-4 ml-2" />
+                    {post.author.name}
+                  </div>
+                  <h3 className="text-xl font-semibold line-clamp-2">
+                    {post.title[locale as keyof typeof post.title] || post.title.vi}
+                  </h3>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 line-clamp-3 mb-4">
+                    {post.excerpt[locale as keyof typeof post.excerpt] || post.excerpt.vi}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap gap-1">
+                      {post.tags.slice(0, 2).map((tag) => (
+                        <Badge key={tag} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                      {post.tags.length > 2 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{post.tags.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+                    <Link href={`/blog/${post.slug}`}>
+                      <Button variant="ghost" size="sm" className="text-yellow-600 hover:text-yellow-700">
+                        Đọc thêm
+                        <ArrowRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-          <div className="flex items-end">
-            <form className="flex w-full max-w-md flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-              <input
-                type="email"
-                placeholder={t("blog.newsletter.email_placeholder")}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              >
-                {t("blog.newsletter.subscribe")}
-              </button>
-            </form>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-gray-400 mb-4">
+              <Search className="h-16 w-16 mx-auto" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Không tìm thấy bài viết</h3>
+            <p className="text-gray-600">Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
+          </div>
+        )}
+
+        {/* Newsletter Subscription */}
+        <div className="mt-16 bg-white rounded-lg shadow-sm p-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("blog.newsletter.title")}</h2>
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">{t("blog.newsletter.description")}</p>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <Input placeholder={t("blog.newsletter.email_placeholder")} className="flex-1" />
+            <Button className="bg-yellow-500 hover:bg-yellow-600">{t("blog.newsletter.subscribe")}</Button>
           </div>
         </div>
       </div>
