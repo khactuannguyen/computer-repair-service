@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 
 export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null);
@@ -40,99 +42,110 @@ export default function AdminLoginPage() {
     checkAuth();
   }, [router]);
 
-  async function handleSubmit(formData: FormData) {
+  function handleSubmit(formData: FormData) {
     setError(null);
 
-    startTransition(async () => {
-      try {
-        const result = await loginAction(formData);
-
-        if (result.success) {
-          router.push("/admin/dashboard");
-          router.refresh();
-        } else {
-          setError(result.error || "Đã xảy ra lỗi khi đăng nhập");
-        }
-      } catch (err) {
-        console.error("Login error:", err);
-        setError("Đã xảy ra lỗi khi đăng nhập");
-      }
+    startTransition(() => {
+      loginAction(formData)
+        .then((result) => {
+          if (result.success) {
+            router.push("/admin/dashboard");
+            router.refresh();
+          } else {
+            setError(result.error || "Đã xảy ra lỗi khi đăng nhập");
+          }
+        })
+        .catch((err) => {
+          console.error("Login error:", err);
+          setError("Đã xảy ra lỗi khi đăng nhập");
+        });
     });
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex justify-center mb-4">
-            <Image
-              src="/laptopsun-logo.svg"
-              alt="LaptopSun Logo"
-              width={80}
-              height={80}
-              className="h-20 w-20"
-            />
-          </div>
-          <CardTitle className="text-2xl font-bold text-center">
-            Đăng nhập quản trị
-          </CardTitle>
-          <CardDescription className="text-center">
-            Đăng nhập để quản lý đơn sửa chữa
-            <br />
-          </CardDescription>
-        </CardHeader>
-        <form action={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-                {error}
-              </div>
-            )}
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
-              </label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                placeholder="Nhập email"
+    <>
+      <title>Đăng nhập quản trị - LaptopSun</title>
+      <Header />
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <div className="flex justify-center mb-4">
+              <Image
+                src="/laptopsun-logo.svg"
+                alt="LaptopSun Logo"
+                width={80}
+                height={80}
+                className="h-20 w-20"
               />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Mật khẩu
-              </label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                placeholder="Nhập mật khẩu"
-              />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-              disabled={isPending}
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Đang đăng nhập...
-                </>
-              ) : (
-                "Đăng nhập"
+            <CardTitle className="text-2xl font-bold text-center">
+              Đăng nhập quản trị
+            </CardTitle>
+            <CardDescription className="text-center">
+              Đăng nhập để quản lý đơn sửa chữa
+              <br />
+            </CardDescription>
+          </CardHeader>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              handleSubmit(formData);
+            }}
+          >
+            <CardContent className="space-y-4">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+                  {error}
+                </div>
               )}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-    </div>
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-sm font-medium">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="Nhập email"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-medium">
+                  Mật khẩu
+                </label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  placeholder="Nhập mật khẩu"
+                />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Đang đăng nhập...
+                  </>
+                ) : (
+                  "Đăng nhập"
+                )}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+      </div>
+      <Footer />
+    </>
   );
 }

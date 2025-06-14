@@ -32,16 +32,16 @@ interface AdminSidebarProps {
 
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Dịch vụ", href: "/admin/dashboard/services", icon: Wrench },
-  { name: "Đơn hàng", href: "/admin/dashboard/orders", icon: Package },
-  { name: "Đặt lịch", href: "/admin/dashboard/bookings", icon: ShoppingCart },
-  { name: "Tin nhắn", href: "/admin/dashboard/contacts", icon: MessageSquare },
-  { name: "Blog", href: "/admin/dashboard/blog", icon: FileText },
-  { name: "FAQ", href: "/admin/dashboard/faqs", icon: HelpCircle },
-  { name: "Đánh giá", href: "/admin/dashboard/testimonials", icon: Star },
-  { name: "Nội dung", href: "/admin/dashboard/content", icon: FileImage },
-  { name: "Khách hàng", href: "/admin/dashboard/customers", icon: Users },
-  { name: "Cài đặt", href: "/admin/dashboard/settings", icon: Settings },
+  { name: "Dịch vụ", href: "/admin/management/services", icon: Wrench },
+  { name: "Đơn hàng", href: "/admin/management/orders", icon: Package },
+  { name: "Đặt lịch", href: "/admin/management/bookings", icon: ShoppingCart },
+  { name: "Tin nhắn", href: "/admin/management/contacts", icon: MessageSquare },
+  { name: "Blog", href: "/admin/management/blog", icon: FileText },
+  { name: "FAQ", href: "/admin/management/faqs", icon: HelpCircle },
+  { name: "Đánh giá", href: "/admin/management/testimonials", icon: Star },
+  { name: "Nội dung", href: "/admin/management/content", icon: FileImage },
+  { name: "Khách hàng", href: "/admin/management/customers", icon: Users },
+  { name: "Cài đặt", href: "/admin/management/settings", icon: Settings },
 ];
 
 export function AdminSidebar({ user }: AdminSidebarProps) {

@@ -1,10 +1,12 @@
-import { type NextRequest, NextResponse } from "next/server"
-import connectToDatabase from "@/lib/db/mongodb"
-import RepairOrder from "@/lib/db/models/RepairOrder"
+import { type NextRequest, NextResponse } from "next/server";
+import connectToDatabase from "@/lib/db/mongodb";
+import RepairOrder from "@/lib/db/models/RepairOrder";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const { trackingCode, phone } = await request.json()
+    const { trackingCode, phone } = await request.json();
 
     if (!trackingCode || !phone) {
       return NextResponse.json(
@@ -12,17 +14,17 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Vui lòng cung cấp đầy đủ mã đơn hàng và số điện thoại",
         },
-        { status: 400 },
-      )
+        { status: 400 }
+      );
     }
 
-    await connectToDatabase()
+    await connectToDatabase();
 
     // Find order by tracking code and customer phone
     const order = await RepairOrder.findOne({
       trackingCode: trackingCode.toUpperCase(),
       customerPhone: phone,
-    }).lean()
+    }).lean();
 
     if (!order) {
       return NextResponse.json(
@@ -30,8 +32,8 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Không tìm thấy đơn hàng với thông tin đã cung cấp",
         },
-        { status: 404 },
-      )
+        { status: 404 }
+      );
     }
 
     // Return order information (excluding sensitive data)
@@ -46,15 +48,15 @@ export async function POST(request: NextRequest) {
         estimatedCompletionDate: order.estimatedCompletionDate,
         // Don't return internal notes for security
       },
-    })
+    });
   } catch (error) {
-    console.error("Error tracking order:", error)
+    console.error("Error tracking order:", error);
     return NextResponse.json(
       {
         success: false,
         message: "Có lỗi xảy ra khi tra cứu đơn hàng",
       },
-      { status: 500 },
-    )
+      { status: 500 }
+    );
   }
 }

@@ -1,14 +1,16 @@
-import { redirect } from "next/navigation"
-import { getSession } from "@/lib/auth/auth"
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/auth/auth";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminRootPage() {
-  const session = await getSession()
+  const session = await getSession();
 
   if (session) {
     // User is logged in, redirect to dashboard
-    redirect("/admin/dashboard")
+    redirect("/admin/dashboard");
   } else {
     // User is not logged in, redirect to login
-    redirect("/admin/login")
+    redirect("/admin/login");
   }
 }

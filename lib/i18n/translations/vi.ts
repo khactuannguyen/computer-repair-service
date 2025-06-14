@@ -23,6 +23,8 @@ export const vi = {
     page_not_found_description:
       "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.",
     back_to_home: "Quay Lại Trang Chủ",
+    page_forbidden: "Truy cập bị từ chối",
+    page_forbidden_description: "Bạn không có quyền truy cập vào trang này.",
   },
 
   // Brand

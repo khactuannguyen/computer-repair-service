@@ -2,7 +2,7 @@ import type React from "react";
 import { checkAuth } from "@/lib/auth/auth";
 import { AdminSidebar } from "@/components/admin/sidebar";
 
-export default async function AdminDashboardLayout({
+export default async function AdminManagementLayout({
   children,
 }: {
   children: React.ReactNode;

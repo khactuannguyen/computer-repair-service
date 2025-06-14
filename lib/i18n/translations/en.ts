@@ -23,6 +23,9 @@ export const en = {
     page_not_found_description:
       "The page you're looking for doesn't exist or has been moved.",
     back_to_home: "Back to Home",
+    page_forbidden: "Access Denied",
+    page_forbidden_description:
+      "You do not have permission to access this page.",
   },
 
   // Brand
