@@ -44,12 +44,7 @@ export default async function NewOrderPage() {
           <CardTitle>Thông tin đơn sửa chữa</CardTitle>
         </CardHeader>
         <CardContent>
-          <form
-            action={async (formData: FormData) => {
-              await createRepairOrder(formData);
-            }}
-            className="space-y-6"
-          >
+          <form action={createRepairOrder} className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Thông tin khách hàng</h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

@@ -1,41 +1,31 @@
-import mongoose, { Schema, type Document } from "mongoose"
+import mongoose, { Schema, type Document } from "mongoose";
+import { LocalizedStringSchema, type LocalizedString } from "./LocalizedString";
 
 export interface IBlogPost extends Document {
-  title: {
-    vi: string
-    en: string
-  }
-  slug: string
-  content: {
-    vi: string
-    en: string
-  }
-  excerpt: {
-    vi: string
-    en: string
-  }
-  coverImageUrl?: string
-  tags: string[]
-  isPublished: boolean
-  publishedAt?: Date
-  author: mongoose.Types.ObjectId
-  createdAt: Date
-  updatedAt: Date
+  title: LocalizedString;
+  slug: string;
+  content: LocalizedString;
+  excerpt: LocalizedString;
+  coverImageUrl?: string;
+  tags: string[];
+  category: string;
+  isPublished: boolean;
+  isFeatured: boolean;
+  publishedAt?: Date;
+  author: mongoose.Types.ObjectId;
+  viewCount: number;
+  readTime: number;
+  seoTitle?: LocalizedString;
+  seoDescription?: LocalizedString;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const BlogPostSchema = new Schema<IBlogPost>(
   {
     title: {
-      vi: {
-        type: String,
-        required: [true, "Vietnamese title is required"],
-        trim: true,
-      },
-      en: {
-        type: String,
-        required: [true, "English title is required"],
-        trim: true,
-      },
+      type: LocalizedStringSchema,
+      required: [true, "Title is required"],
     },
     slug: {
       type: String,
@@ -45,24 +35,12 @@ const BlogPostSchema = new Schema<IBlogPost>(
       trim: true,
     },
     content: {
-      vi: {
-        type: String,
-        required: [true, "Vietnamese content is required"],
-      },
-      en: {
-        type: String,
-        required: [true, "English content is required"],
-      },
+      type: LocalizedStringSchema,
+      required: [true, "Content is required"],
     },
     excerpt: {
-      vi: {
-        type: String,
-        required: [true, "Vietnamese excerpt is required"],
-      },
-      en: {
-        type: String,
-        required: [true, "English excerpt is required"],
-      },
+      type: LocalizedStringSchema,
+      required: [true, "Excerpt is required"],
     },
     coverImageUrl: {
       type: String,
@@ -73,7 +51,16 @@ const BlogPostSchema = new Schema<IBlogPost>(
         trim: true,
       },
     ],
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+      trim: true,
+    },
     isPublished: {
+      type: Boolean,
+      default: false,
+    },
+    isFeatured: {
       type: Boolean,
       default: false,
     },
@@ -85,13 +72,29 @@ const BlogPostSchema = new Schema<IBlogPost>(
       ref: "User",
       required: [true, "Author is required"],
     },
+    viewCount: {
+      type: Number,
+      default: 0,
+    },
+    readTime: {
+      type: Number,
+      default: 5,
+    },
+    seoTitle: {
+      type: LocalizedStringSchema,
+    },
+    seoDescription: {
+      type: LocalizedStringSchema,
+    },
   },
-  { timestamps: true },
-)
+  { timestamps: true }
+);
 
-// Ensure indexes
-BlogPostSchema.index({ slug: 1 })
-BlogPostSchema.index({ isPublished: 1, publishedAt: -1 })
-BlogPostSchema.index({ tags: 1 })
+BlogPostSchema.index({ slug: 1 });
+BlogPostSchema.index({ isPublished: 1, publishedAt: -1 });
+BlogPostSchema.index({ category: 1, isPublished: 1 });
+BlogPostSchema.index({ tags: 1 });
+BlogPostSchema.index({ isFeatured: 1, publishedAt: -1 });
 
-export default mongoose.models.BlogPost || mongoose.model<IBlogPost>("BlogPost", BlogPostSchema)
+export default mongoose.models.BlogPost ||
+  mongoose.model<IBlogPost>("BlogPost", BlogPostSchema);

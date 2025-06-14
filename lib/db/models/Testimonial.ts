@@ -1,16 +1,17 @@
 import mongoose, { Schema, type Document } from "mongoose";
+import { LocalizedStringSchema, type LocalizedString } from "./LocalizedString";
 
 export interface ITestimonial extends Document {
   customerName: string;
-  customerTitle?: string;
-  content: {
-    vi: string;
-    en: string;
-  };
+  customerTitle: LocalizedString;
+  content: LocalizedString;
   rating: number;
   avatarUrl?: string;
+  serviceType: string;
   isPublished: boolean;
+  isFeatured: boolean;
   publishedAt?: Date;
+  order: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,18 +24,12 @@ const TestimonialSchema = new Schema<ITestimonial>(
       trim: true,
     },
     customerTitle: {
-      type: String,
-      trim: true,
+      type: LocalizedStringSchema,
+      required: [true, "Customer title is required"],
     },
     content: {
-      vi: {
-        type: String,
-        required: [true, "Vietnamese content is required"],
-      },
-      en: {
-        type: String,
-        required: [true, "English content is required"],
-      },
+      type: LocalizedStringSchema,
+      required: [true, "Content is required"],
     },
     rating: {
       type: Number,
@@ -44,21 +39,35 @@ const TestimonialSchema = new Schema<ITestimonial>(
     },
     avatarUrl: {
       type: String,
+      default: "/placeholder-user.jpg",
+    },
+    serviceType: {
+      type: String,
+      required: [true, "Service type is required"],
+      enum: ["macbook", "laptop", "data_recovery", "hardware_upgrade", "other"],
     },
     isPublished: {
+      type: Boolean,
+      default: false,
+    },
+    isFeatured: {
       type: Boolean,
       default: false,
     },
     publishedAt: {
       type: Date,
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
 
-// Ensure indexes
-TestimonialSchema.index({ isPublished: 1, publishedAt: -1 });
-TestimonialSchema.index({ rating: -1 });
+TestimonialSchema.index({ isPublished: 1, order: 1 });
+TestimonialSchema.index({ isFeatured: 1, publishedAt: -1 });
+TestimonialSchema.index({ serviceType: 1, isPublished: 1 });
 
 export default mongoose.models.Testimonial ||
   mongoose.model<ITestimonial>("Testimonial", TestimonialSchema);
