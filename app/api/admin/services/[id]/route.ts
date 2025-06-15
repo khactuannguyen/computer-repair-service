@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db/mongodb";
 import Service from "@/lib/db/models/Service";
+import Category from "@/lib/db/models/Category";
 import { checkAuth } from "@/lib/auth/auth";
 
 export const dynamic = "force-dynamic";
@@ -56,9 +57,7 @@ export async function PUT(
       );
     }
     // Optionally: check if category exists
-    const categoryExists = await Service.db
-      .model("Category")
-      .findById(data.category);
+    const categoryExists = await Category.findById(data.category);
     if (!categoryExists) {
       return NextResponse.json(
         { error: "Category not found" },
