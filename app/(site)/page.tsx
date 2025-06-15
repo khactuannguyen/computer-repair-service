@@ -264,25 +264,25 @@ export default function Home() {
 
           <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <TestimonialCard
-              name="Sarah Johnson"
-              role="Graphic Designer"
-              content="My MacBook Pro wouldn't turn on and I was panicking about my work files. TechFix not only fixed it the same day but also helped recover all my data. Excellent service!"
+              name="Liam Đức Tài"
+              role="Kỹ sư IT"
+              content="Lần đầu đến đây thay màn hình, trải nghiệm rất OK, kỹ thuật viên tư vấn nhiệt tình, giá vừa ổn và thời gian trả sp nhanh chóng 10/10 👏"
               rating={5}
-              image="/placeholder.svg?height=80&width=80"
+              image="https://lh3.googleusercontent.com/a-/ALV-UjWC83CKnMcfPQ9snrA4jZJG6esA4W0zfcJDmAluYEKY8pd2r1io=w144-h144-p-rp-mo-br100"
             />
             <TestimonialCard
-              name="Michael Chen"
-              role="Software Developer"
-              content="I spilled coffee on my laptop keyboard and thought it was done for. The team at TechFix replaced the keyboard and cleaned the internals. Works like new now. Very impressed!"
+              name="Thiện Huỳnh"
+              role="Sinh viên"
+              content="Nhân viên vui vẻ nhiệt tình, kiểm tra máy đúng kĩ thuật, báo giá phù hợp, giải đáp mọi thắc mắc của khách hàng, trải nghiệm tuyệt vời tại đây❤️"
               rating={5}
-              image="/placeholder.svg?height=80&width=80"
+              image="https://lh3.googleusercontent.com/a-/ALV-UjWOG5xchr5f_P8h9KymESGrUBHCcyCToLdhkCvyW48J8DvcZWeM=w144-h144-p-rp-mo-br100"
             />
             <TestimonialCard
-              name="Emily Rodriguez"
-              role="College Student"
-              content="As a student, I couldn't afford a new laptop when mine started overheating. TechFix cleaned the fans and replaced the thermal paste at a price I could afford. Great value!"
-              rating={4}
-              image="/placeholder.svg?height=80&width=80"
+              name="Thương Nguyễn"
+              role="Nhân viên văn phòng"
+              content="Mình có ghé ở đây sửa 1 laptop Dell bị mất nguồn, thấy mấy bạn làm việc nhiệt tình. Chi phí thấp hơn những nơi khác mình tham khảo nhưng bảo hành dài. Mình rất an tâm cho 5 sao 😍 …"
+              rating={5}
+              image="https://lh3.googleusercontent.com/a-/ALV-UjWVwWXCpE5DoDRHFQO-U_4EKfJksFCYpV01R6Pe6ob-gqao7CaI=w144-h144-p-rp-mo-br100"
             />
           </div>
         </div>

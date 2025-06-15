@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db/mongodb";
 import Service from "@/lib/db/models/Service";
+import Category from "@/lib/db/models/Category";
 
 export const dynamic = "force-dynamic";
 
