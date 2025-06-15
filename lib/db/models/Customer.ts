@@ -1,11 +1,12 @@
-import mongoose, { Schema, type Document } from "mongoose"
+import mongoose, { Schema, type Document } from "mongoose";
 
 export interface ICustomer extends Document {
-  name: string
-  email: string
-  phone: string
-  createdAt: Date
-  updatedAt: Date
+  name: string;
+  email?: string; // Make email optional
+  phone: string;
+  note?: string; // Add note as optional
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const CustomerSchema = new Schema<ICustomer>(
@@ -17,7 +18,7 @@ const CustomerSchema = new Schema<ICustomer>(
     },
     email: {
       type: String,
-      required: [true, "Customer email is required"],
+      required: false, // Make email optional
       lowercase: true,
       trim: true,
     },
@@ -25,13 +26,20 @@ const CustomerSchema = new Schema<ICustomer>(
       type: String,
       required: [true, "Customer phone is required"],
       trim: true,
+      unique: true, // Ensure phone is unique
+    },
+    note: {
+      type: String,
+      required: false,
+      trim: true,
     },
   },
-  { timestamps: true },
-)
+  { timestamps: true }
+);
 
 // Ensure indexes
-CustomerSchema.index({ email: 1 })
-CustomerSchema.index({ phone: 1 })
+CustomerSchema.index({ email: 1 });
+CustomerSchema.index({ phone: 1 });
 
-export default mongoose.models.Customer || mongoose.model<ICustomer>("Customer", CustomerSchema)
+export default mongoose.models.Customer ||
+  mongoose.model<ICustomer>("Customer", CustomerSchema);

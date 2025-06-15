@@ -148,7 +148,7 @@ export const en = {
       hours: {
         title: "Working hours",
         weekdays: "Mon-Sat: 8:00-19:00",
-        sunday: "Sun: 9:00-18:00",
+        sunday: "Sun: 9:00-17:00",
       },
       social: {
         title: "Social Media",
@@ -515,7 +515,7 @@ export const en = {
     repair_tips: "Repair Tips & Blog",
     contact_us: "Contact Us",
     find_us: "Find Us",
-    business_hours: "Mon-Sat: 8:00AM-7:00PM\nSun: 9:00AM-6:00PM",
+    business_hours: "Mon-Sat: 8:00AM-7:00PM\nSun: 9:00AM-5:00PM",
     copyright: "All rights reserved.",
     follow_us: "Follow Us",
   },

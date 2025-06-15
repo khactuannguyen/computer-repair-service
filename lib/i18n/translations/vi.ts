@@ -149,7 +149,7 @@ export const vi = {
       hours: {
         title: "Giờ làm việc",
         weekdays: "T2-T7: 8:00-19:00",
-        sunday: "CN: 9:00-18:00",
+        sunday: "CN: 9:00-17:00",
       },
       social: {
         title: "Mạng xã hội",
@@ -521,7 +521,7 @@ export const vi = {
     repair_tips: "Mẹo sửa chữa & Blog",
     contact_us: "Liên hệ với chúng tôi",
     find_us: "Tìm chúng tôi",
-    business_hours: "Thứ 2-7: 08:00-19:00\nChủ nhật: 09:00-18:00",
+    business_hours: "Thứ 2-7: 08:00-19:00\nChủ nhật: 09:00-17:00",
     copyright: "Tất cả quyền được bảo lưu.",
     follow_us: "Theo dõi chúng tôi",
   },
