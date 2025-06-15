@@ -8,11 +8,49 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, CheckCircle, Award } from "lucide-react";
 import ServiceCard from "@/components/services/service-card";
 import TestimonialCard from "@/components/testimonials/testimonial-card";
-import { services } from "@/lib/services-data";
+import { useEffect, useState } from "react";
 import { useTranslation } from "@/hooks/use-translation";
 
 export default function Home() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchServices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale]);
+
+  const getLocalizedText = (text: { vi: string; en: string }) => {
+    return text?.[locale] || text?.vi || "";
+  };
+
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/services?limit=6`);
+      const data = await response.json();
+      if (data.success) {
+        setServices(
+          data.services.map((s: any) => ({
+            id: s._id,
+            title: getLocalizedText(s.name),
+            description: getLocalizedText(s.shortDescription || s.description),
+            price: s.price?.to
+              ? `${s.price.from.toLocaleString()} - ${s.price.to.toLocaleString()} VNĐ`
+              : `Từ ${s.price.from.toLocaleString()} VNĐ`,
+            icon: s.icon,
+            estimatedTime: s.estimatedTime,
+            category: s.category,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col">
@@ -126,11 +164,17 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.slice(0, 6).map((service) => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {services.map((service) => (
+                <ServiceCard key={service.id} service={service} />
+              ))}
+            </div>
+          )}
 
           <div className="mt-12 text-center">
             <Button asChild size="lg">

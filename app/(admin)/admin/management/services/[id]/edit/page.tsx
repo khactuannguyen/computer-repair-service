@@ -1,9 +1,8 @@
 "use client";
 
 import type React from "react";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,27 +23,18 @@ import { useTranslation } from "@/hooks/use-translation";
 
 export const dynamic = "force-dynamic";
 
-export default function NewServicePage() {
+export default function EditServicePage() {
   const { t, locale } = useTranslation();
   const router = useRouter();
+  const params = useParams();
+  const serviceId = params?.id as string;
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [formData, setFormData] = useState({
-    name: {
-      vi: "",
-      en: "",
-    },
-    description: {
-      vi: "",
-      en: "",
-    },
-    shortDescription: {
-      vi: "",
-      en: "",
-    },
-    price: {
-      from: 0,
-      to: 0,
-    },
+    name: { vi: "", en: "" },
+    description: { vi: "", en: "" },
+    shortDescription: { vi: "", en: "" },
+    price: { from: 0, to: 0 },
     estimatedTime: "",
     category: "laptop",
     icon: "wrench",
@@ -54,6 +44,30 @@ export default function NewServicePage() {
     isFeatured: false,
     order: 0,
   });
+
+  useEffect(() => {
+    if (!serviceId) return;
+    setFetching(true);
+    fetch(`/api/admin/services/${serviceId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.service) {
+          setFormData({
+            ...formData,
+            ...data.service,
+            name: data.service.name || { vi: "", en: "" },
+            description: data.service.description || { vi: "", en: "" },
+            shortDescription: data.service.shortDescription || {
+              vi: "",
+              en: "",
+            },
+            price: data.service.price || { from: 0, to: 0 },
+          });
+        }
+      })
+      .finally(() => setFetching(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serviceId]);
 
   const categories = [
     { value: "macbook", label: "MacBook" },
@@ -74,44 +88,47 @@ export default function NewServicePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const response = await fetch("/api/admin/services", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(`/api/admin/services/${serviceId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
       if (response.ok) {
         router.push("/admin/management/services");
       } else {
-        console.error("Error creating service");
+        console.error("Error updating service");
       }
     } catch (error) {
-      console.error("Error creating service:", error);
+      console.error("Error updating service:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const updateFormData = (field: string, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const updateLocalizedField = (field: string, lang: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: {
-        ...prev[field as keyof typeof prev],
+        ...(typeof prev[field] === "object" && prev[field] !== null
+          ? prev[field]
+          : {}),
         [lang]: value,
       },
     }));
   };
+
+  if (fetching) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -123,13 +140,12 @@ export default function NewServicePage() {
           </Link>
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">Thêm dịch vụ mới</h1>
+          <h1 className="text-3xl font-bold">Cập nhật dịch vụ</h1>
           <p className="text-muted-foreground">
-            Tạo dịch vụ sửa chữa mới cho cửa hàng
+            Chỉnh sửa thông tin dịch vụ sửa chữa
           </p>
         </div>
       </div>
-
       <form onSubmit={handleSubmit}>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
@@ -143,7 +159,6 @@ export default function NewServicePage() {
                     <TabsTrigger value="vi">Tiếng Việt</TabsTrigger>
                     <TabsTrigger value="en">English</TabsTrigger>
                   </TabsList>
-
                   <TabsContent value="vi" className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="name-vi">Tên dịch vụ (Tiếng Việt)</Label>
@@ -190,7 +205,6 @@ export default function NewServicePage() {
                       />
                     </div>
                   </TabsContent>
-
                   <TabsContent value="en" className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="name-en">Service Name (English)</Label>
@@ -242,7 +256,6 @@ export default function NewServicePage() {
                 </Tabs>
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle>Giá và thời gian</CardTitle>
@@ -307,7 +320,6 @@ export default function NewServicePage() {
               </CardContent>
             </Card>
           </div>
-
           <div className="space-y-6">
             <Card>
               <CardHeader>
@@ -332,7 +344,6 @@ export default function NewServicePage() {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="icon">Icon</Label>
                   <Select
@@ -351,7 +362,6 @@ export default function NewServicePage() {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="image-url">URL hình ảnh</Label>
                   <Input
@@ -361,7 +371,6 @@ export default function NewServicePage() {
                     placeholder="https://example.com/image.jpg"
                   />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="order">Thứ tự hiển thị</Label>
                   <Input
@@ -376,7 +385,6 @@ export default function NewServicePage() {
                     }
                   />
                 </div>
-
                 <div className="flex items-center justify-between">
                   <Label htmlFor="is-active">Kích hoạt</Label>
                   <Switch
@@ -387,7 +395,6 @@ export default function NewServicePage() {
                     }
                   />
                 </div>
-
                 <div className="flex items-center justify-between">
                   <Label htmlFor="is-featured">Nổi bật</Label>
                   <Switch
@@ -400,14 +407,13 @@ export default function NewServicePage() {
                 </div>
               </CardContent>
             </Card>
-
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               ) : (
                 <Save className="mr-2 h-4 w-4" />
               )}
-              Lưu dịch vụ
+              Lưu thay đổi
             </Button>
           </div>
         </div>

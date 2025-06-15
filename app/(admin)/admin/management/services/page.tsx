@@ -138,7 +138,7 @@ export default function AdminServicesPage() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/admin/dashboard/services/new">
+          <Link href="/admin/management/services/new">
             <Plus className="mr-2 h-4 w-4" />
             Thêm dịch vụ
           </Link>
@@ -240,7 +240,7 @@ export default function AdminServicesPage() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
                             <Link
-                              href={`/admin/dashboard/services/${service._id}`}
+                              href={`/admin/management/services/${service._id}`}
                             >
                               <Eye className="mr-2 h-4 w-4" />
                               Xem
@@ -248,7 +248,7 @@ export default function AdminServicesPage() {
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link
-                              href={`/admin/dashboard/services/${service._id}/edit`}
+                              href={`/admin/management/services/${service._id}/edit`}
                             >
                               <Edit className="mr-2 h-4 w-4" />
                               Sửa
