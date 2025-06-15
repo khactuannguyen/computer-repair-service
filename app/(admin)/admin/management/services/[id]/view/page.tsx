@@ -86,18 +86,16 @@ export default function ServiceDetailPage() {
             {service.estimatedTime}
           </div>
           <div>
-            <span className="font-semibold">
-              {t("services.card.starting_from")}:{" "}
-            </span>
+            <span className="font-semibold">{t("services.card.price")}: </span>
             {service.price?.to && service.price?.to > service.price?.from
               ? `${service.price.from.toLocaleString()} - ${service.price.to.toLocaleString()} VNĐ`
               : `Từ ${service.price.from.toLocaleString()} VNĐ`}
           </div>
           <div>
-            <span className="font-semibold">
-              {t("services.process.title")}:{" "}
-            </span>
-            {service.category}
+            <span className="font-semibold">Danh mục: </span>
+            {service.category?.name?.[locale] ||
+              service.category?.name?.vi ||
+              service.category}
           </div>
           {service.imageUrl && (
             <div>

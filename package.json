@@ -53,6 +53,7 @@
     "react-hook-form": "^7.48.2",
     "snappy": "latest",
     "socks": "latest",
+    "swr": "^2.3.3",
     "tailwind-merge": "^2.5.5",
     "tailwindcss": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",

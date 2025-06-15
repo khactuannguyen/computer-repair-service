@@ -68,17 +68,11 @@ export default function AdminServicesPage() {
     total: 0,
     pages: 0,
   });
-
-  const categories = [
-    { value: "all", label: "Tất cả" },
-    { value: "macbook", label: "MacBook" },
-    { value: "laptop", label: "Laptop" },
-    { value: "data", label: "Khôi phục dữ liệu" },
-    { value: "other", label: "Khác" },
-  ];
+  const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
     fetchServices();
+    fetchCategories();
   }, [page, search, category]);
 
   const fetchServices = async () => {
@@ -102,6 +96,18 @@ export default function AdminServicesPage() {
       console.error("Error fetching services:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/categories");
+      const data = await res.json();
+      setCategories(
+        data.sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+      );
+    } catch (e) {
+      setCategories([]);
     }
   };
 
@@ -208,10 +214,13 @@ export default function AdminServicesPage() {
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">
-                        {
-                          categories.find((c) => c.value === service.category)
-                            ?.label
-                        }
+                        {service.category &&
+                        typeof service.category === "object" &&
+                        "name" in service.category
+                          ? (service.category as any).name?.[locale] ||
+                            (service.category as any).name?.vi ||
+                            ""
+                          : ""}
                       </Badge>
                     </TableCell>
                     <TableCell>{formatPrice(service.price)}</TableCell>

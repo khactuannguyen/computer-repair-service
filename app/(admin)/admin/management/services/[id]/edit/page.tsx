@@ -44,6 +44,7 @@ export default function EditServicePage() {
     isFeatured: false,
     order: 0,
   });
+  const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
     if (!serviceId) return;
@@ -69,12 +70,12 @@ export default function EditServicePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serviceId]);
 
-  const categories = [
-    { value: "macbook", label: "MacBook" },
-    { value: "laptop", label: "Laptop" },
-    { value: "data", label: "Khôi phục dữ liệu" },
-    { value: "other", label: "Khác" },
-  ];
+  // Fetch categories from API
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data || []));
+  }, []);
 
   const icons = [
     { value: "laptop", label: "Laptop" },
@@ -114,9 +115,7 @@ export default function EditServicePage() {
     setFormData((prev) => ({
       ...prev,
       [field]: {
-        ...(typeof prev[field] === "object" && prev[field] !== null
-          ? prev[field]
-          : {}),
+        ...(prev[field as keyof typeof prev] as object),
         [lang]: value,
       },
     }));
@@ -336,9 +335,9 @@ export default function EditServicePage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.value} value={category.value}>
-                          {category.label}
+                      {categories.map((cat) => (
+                        <SelectItem key={cat._id} value={cat._id}>
+                          {cat.name?.[locale] || cat.name?.en}
                         </SelectItem>
                       ))}
                     </SelectContent>

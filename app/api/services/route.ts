@@ -23,7 +23,9 @@ export async function GET(request: NextRequest) {
       query.isFeatured = true;
     }
 
-    let servicesQuery = Service.find(query).sort({ order: 1, createdAt: -1 });
+    let servicesQuery = Service.find(query)
+      .populate({ path: "category", select: "name order description" })
+      .sort({ order: 1, createdAt: -1 });
 
     if (limit) {
       servicesQuery = servicesQuery.limit(Number.parseInt(limit));

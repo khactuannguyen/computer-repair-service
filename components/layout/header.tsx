@@ -45,6 +45,7 @@ export default function Header() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // Always render navigation, even if translation not ready
   const navigation = [
     { name: t("nav.home"), href: "/" },
     { name: t("nav.services"), href: "/services" },
@@ -94,14 +95,18 @@ export default function Header() {
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-            onClick={() => setMobileMenuOpen(true)}
+            onClick={() => setMobileMenuOpen((open) => !open)}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
+            aria-label={
+              mobileMenuOpen ? t("nav.close_menu") : t("nav.open_menu")
+            }
           >
-            <span className="sr-only">
-              {mobileMenuOpen ? t("nav.close_menu") : t("nav.open_menu")}
-            </span>
-            <Menu className="h-6 w-6" aria-hidden="true" />
+            {mobileMenuOpen ? (
+              <X className="h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Menu className="h-6 w-6" aria-hidden="true" />
+            )}
           </button>
         </div>
 
@@ -139,8 +144,10 @@ export default function Header() {
       {/* Mobile menu */}
       <div
         className={cn(
-          "fixed inset-0 z-50 bg-black/20 backdrop-blur-sm transition-opacity lg:hidden",
-          mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          "fixed inset-0 z-50 bg-black/20 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
+          mobileMenuOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         )}
         aria-hidden={!mobileMenuOpen}
       >
@@ -148,7 +155,7 @@ export default function Header() {
           ref={mobileMenuRef}
           id="mobile-menu"
           className={cn(
-            "fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 transition-transform",
+            "fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 transition-transform duration-300",
             mobileMenuOpen ? "translate-x-0" : "translate-x-full"
           )}
         >
@@ -184,9 +191,9 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                {navigation.map((item) => (
+                {navigation.map((item, idx) => (
                   <Link
-                    key={item.name}
+                    key={item.href + idx}
                     href={item.href}
                     className={cn(
                       "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 transition-colors",
@@ -196,7 +203,7 @@ export default function Header() {
                     )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    {item.name}
+                    {item.name || item.href}
                   </Link>
                 ))}
               </div>

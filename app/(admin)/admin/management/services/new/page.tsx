@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,13 +54,7 @@ export default function NewServicePage() {
     isFeatured: false,
     order: 0,
   });
-
-  const categories = [
-    { value: "macbook", label: "MacBook" },
-    { value: "laptop", label: "Laptop" },
-    { value: "data", label: "Khôi phục dữ liệu" },
-    { value: "other", label: "Khác" },
-  ];
+  const [categories, setCategories] = useState<any[]>([]);
 
   const icons = [
     { value: "laptop", label: "Laptop" },
@@ -70,6 +64,13 @@ export default function NewServicePage() {
     { value: "cpu", label: "CPU" },
     { value: "wrench", label: "Wrench" },
   ];
+
+  // Fetch categories from API
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data || []));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -324,9 +325,9 @@ export default function NewServicePage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.value} value={category.value}>
-                          {category.label}
+                      {categories.map((cat) => (
+                        <SelectItem key={cat._id} value={cat._id}>
+                          {cat.name?.[locale] || cat.name?.en}
                         </SelectItem>
                       ))}
                     </SelectContent>

@@ -16,7 +16,10 @@ export async function GET(
     }
 
     await connectToDatabase();
-    const service = await Service.findById(params.id);
+    const service = await Service.findById(params.id).populate({
+      path: "category",
+      select: "name order description",
+    });
 
     if (!service) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
@@ -44,6 +47,24 @@ export async function PUT(
 
     await connectToDatabase();
     const data = await request.json();
+
+    // Validate category is required and is a valid ObjectId
+    if (!data.category) {
+      return NextResponse.json(
+        { error: "Category is required" },
+        { status: 400 }
+      );
+    }
+    // Optionally: check if category exists
+    const categoryExists = await Service.db
+      .model("Category")
+      .findById(data.category);
+    if (!categoryExists) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 400 }
+      );
+    }
 
     const service = await Service.findByIdAndUpdate(params.id, data, {
       new: true,

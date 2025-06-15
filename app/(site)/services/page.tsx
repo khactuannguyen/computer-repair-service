@@ -46,6 +46,23 @@ export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/categories");
+      const data = await res.json();
+      setCategories(
+        data.sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+      );
+    } catch (e) {
+      setCategories([]);
+    }
+  };
 
   useEffect(() => {
     fetchServices();
@@ -58,10 +75,8 @@ export default function ServicesPage() {
       if (activeTab !== "all") {
         params.append("category", activeTab);
       }
-
       const response = await fetch(`/api/services?${params}`);
       const data = await response.json();
-
       if (data.success) {
         setServices(data.services);
       }
@@ -101,10 +116,11 @@ export default function ServicesPage() {
   };
 
   const tabs = [
-    { id: "all", label: t("services.tabs.all") },
-    { id: "macbook", label: t("services.tabs.macbook") },
-    { id: "laptop", label: t("services.tabs.laptop") },
-    { id: "data", label: t("services.tabs.data") },
+    { id: "all", label: "Tất cả" },
+    ...categories.map((cat) => ({
+      id: cat._id,
+      label: cat.name?.[locale] || cat.name?.vi,
+    })),
   ];
 
   if (loading) {
@@ -127,72 +143,90 @@ export default function ServicesPage() {
           {t("services.subtitle")}
         </p>
       </div>
-
       <div className="mt-12">
-        {/* Custom Tab Implementation */}
         <div className="flex flex-wrap justify-center gap-2 border-b">
-          {tabs.map((tab) => (
+          <button
+            key="all"
+            onClick={() => setActiveTab("all")}
+            className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors ${
+              activeTab === "all"
+                ? "border-primary text-primary bg-primary/5"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:border-gray-300"
+            }`}
+          >
+            {t("services.tabs.all")}
+          </button>
+          {categories.map((cat) => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              key={cat._id}
+              onClick={() => setActiveTab(cat._id)}
               className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors ${
-                activeTab === tab.id
+                activeTab === cat._id
                   ? "border-primary text-primary bg-primary/5"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-gray-300"
               }`}
             >
-              {tab.label}
+              {cat.name?.[locale] || cat.name?.en}
             </button>
           ))}
         </div>
-
         <div className="mt-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
-              <Card key={service._id} className="flex h-full flex-col">
-                <CardContent className="flex flex-1 flex-col p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                    {getIcon(service.icon)}
-                  </div>
-                  <h3 className="mb-2 text-xl font-medium">
-                    {getLocalizedText(service.name)}
-                  </h3>
-                  <p className="mb-4 flex-1 text-muted-foreground">
-                    {getLocalizedText(
-                      service.shortDescription || service.description
+            {services.map((service) => {
+              const category = categories.find(
+                (cat) => cat._id === service.category
+              );
+              return (
+                <Card key={service._id} className="flex h-full flex-col">
+                  <CardContent className="flex flex-1 flex-col p-6">
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                      {getIcon(service.icon)}
+                    </div>
+                    <h3 className="mb-2 text-xl font-medium">
+                      {getLocalizedText(service.name)}
+                    </h3>
+                    <p className="mb-2 text-xs text-primary font-semibold">
+                      {category
+                        ? category.name?.[locale] || category.name?.en
+                        : ""}
+                    </p>
+                    <p className="mb-4 flex-1 text-muted-foreground">
+                      {getLocalizedText(
+                        service.shortDescription || service.description
+                      )}
+                    </p>
+                    <div className="mt-auto space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">
+                          {t("services.card.starting_from")}
+                        </span>
+                        <span className="text-lg font-bold">
+                          {formatPrice(service.price)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">
+                          {t("services.card.estimated_time")}
+                        </span>
+                        <span className="text-sm">{service.estimatedTime}</span>
+                      </div>
+                    </div>
+                    {service.isFeatured && (
+                      <Badge className="mt-2 w-fit">
+                        {t("services.card.featured")}
+                      </Badge>
                     )}
-                  </p>
-                  <div className="mt-auto space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        {t("services.card.starting_from")}
-                      </span>
-                      <span className="text-lg font-bold">
-                        {formatPrice(service.price)}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        {t("services.card.estimated_time")}
-                      </span>
-                      <span className="text-sm">{service.estimatedTime}</span>
-                    </div>
-                  </div>
-                  {service.isFeatured && (
-                    <Badge className="mt-2 w-fit">
-                      {t("services.card.featured")}
-                    </Badge>
-                  )}
-                </CardContent>
-                <CardFooter className="border-t p-6 pt-4">
-                  <Button asChild className="w-full">
-                    <Link href={`/book-appointment?service=${service._id}`}>
-                      {t("services.card.book_now")}
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+                  </CardContent>
+                  <CardFooter className="border-t p-6 pt-4">
+                    <Button asChild className="w-full">
+                      <Link href={`/book-appointment?service=${service._id}`}>
+                        {t("services.card.book_now")}
+                      </Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </div>

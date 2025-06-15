@@ -51,8 +51,8 @@ const ServiceSchema = new Schema<IService>(
       required: [true, "Estimated time is required"],
     },
     category: {
-      type: String,
-      enum: ["macbook", "laptop", "data", "other"],
+      type: Schema.Types.ObjectId,
+      ref: "Category",
       required: [true, "Category is required"],
     },
     icon: {

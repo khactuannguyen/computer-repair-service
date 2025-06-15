@@ -33,6 +33,7 @@ interface AdminSidebarProps {
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Dịch vụ", href: "/admin/management/services", icon: Wrench },
+  { name: "Danh mục", href: "/admin/management/categories", icon: Package },
   { name: "Đơn hàng", href: "/admin/management/orders", icon: Package },
   { name: "Đặt lịch", href: "/admin/management/bookings", icon: ShoppingCart },
   { name: "Tin nhắn", href: "/admin/management/contacts", icon: MessageSquare },

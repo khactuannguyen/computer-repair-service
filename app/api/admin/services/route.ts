@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
     const services = await Service.find(query)
+      .populate({ path: "category", select: "name order description" })
       .sort({ order: 1, createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -69,6 +70,24 @@ export async function POST(request: NextRequest) {
 
     await connectToDatabase();
     const data = await request.json();
+
+    // Validate category is required and is a valid ObjectId
+    if (!data.category) {
+      return NextResponse.json(
+        { error: "Category is required" },
+        { status: 400 }
+      );
+    }
+    // Optionally: check if category exists
+    const categoryExists = await Service.db
+      .model("Category")
+      .findById(data.category);
+    if (!categoryExists) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 400 }
+      );
+    }
 
     const service = new Service(data);
     await service.save();
