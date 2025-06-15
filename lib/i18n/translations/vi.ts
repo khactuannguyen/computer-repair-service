@@ -86,7 +86,8 @@ export const vi = {
     },
     ui: {
       page_title: "Tra cứu đơn sửa chữa",
-      page_description: "Nhập mã đơn hàng và số điện thoại để kiểm tra trạng thái sửa chữa của bạn",
+      page_description:
+        "Nhập mã đơn hàng và số điện thoại để kiểm tra trạng thái sửa chữa của bạn",
       search_title: "Thông tin tra cứu",
       tracking_code_label: "Mã đơn hàng",
       tracking_code_placeholder: "VD: LPS-20240613-0001",
@@ -312,7 +313,7 @@ export const vi = {
       contact: "Liên hệ với chúng tôi",
     },
     card: {
-      starting_from: "Bắt đầu từ",
+      price: "Giá",
       estimated_time: "Thời gian ước tính",
       book_now: "Đặt ngay",
       featured: "Nổi bật",

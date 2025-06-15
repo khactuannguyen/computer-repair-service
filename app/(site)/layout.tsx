@@ -5,6 +5,7 @@ import "../globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import ContactBar from "@/components/layout/contact-bar";
+import { TranslationProvider } from "@/components/providers/translation-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,11 +31,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col">
-      <ContactBar />
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </div>
+    <TranslationProvider>
+      <div className="flex min-h-screen flex-col">
+        <ContactBar />
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </div>
+    </TranslationProvider>
   );
 }

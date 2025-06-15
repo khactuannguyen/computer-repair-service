@@ -145,7 +145,7 @@ export default async function AdminDashboardPage() {
                           : "Đã hủy"}
                       </span>
                       <Link
-                        href={`/admin/dashboard/orders/${order._id}`}
+                        href={`/admin/management/orders/${order._id}`}
                         className="block mt-1 text-xs text-blue-600 hover:underline"
                       >
                         Xem chi tiết
@@ -161,7 +161,7 @@ export default async function AdminDashboardPage() {
             )}
             <div className="mt-4">
               <Link
-                href="/admin/dashboard/orders"
+                href="/admin/management/orders"
                 className="text-sm text-blue-600 hover:underline"
               >
                 Xem tất cả đơn sửa chữa

@@ -87,7 +87,8 @@ export const en = {
     },
     ui: {
       page_title: "Track Repair Order",
-      page_description: "Enter your order code and phone number to check your repair status",
+      page_description:
+        "Enter your order code and phone number to check your repair status",
       search_title: "Search Information",
       tracking_code_label: "Order Code",
       tracking_code_placeholder: "e.g., LPS-20240613-0001",
@@ -120,7 +121,8 @@ export const en = {
       estimated_completion: "Estimated Completion Time",
       important_notes: "Important Notes",
       note_1: "• Please bring your order code when picking up your device",
-      note_2: "• Contact our hotline if you have questions about repair progress",
+      note_2:
+        "• Contact our hotline if you have questions about repair progress",
       note_3: "• Orders are covered by our store's warranty policy",
     },
   },
@@ -306,7 +308,7 @@ export const en = {
       contact: "Contact Us",
     },
     card: {
-      starting_from: "Starting from",
+      price: "Price",
       estimated_time: "Est. time",
       book_now: "Book Now",
       featured: "Featured",
