@@ -1,24 +1,24 @@
-import mongoose, { Schema, type Document } from "mongoose"
+import mongoose, { Schema, type Document } from "mongoose";
 
 export interface IRepairOrder extends Document {
-  trackingCode: string
-  customerName: string
-  customerPhone: string
-  customerEmail?: string
-  deviceType: string
-  deviceBrand?: string
-  deviceModel?: string
-  serialNumber?: string
-  issueDescription: string
-  status: "pending" | "in_progress" | "completed" | "cancelled"
-  estimatedCost?: number
-  finalCost?: number
-  assignedTo?: mongoose.Types.ObjectId
-  internalNotes?: string[]
-  createdAt: Date
-  updatedAt: Date
-  estimatedCompletionDate?: Date
-  completedAt?: Date
+  trackingCode: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  deviceType: string;
+  deviceBrand?: string;
+  deviceModel?: string;
+  serialNumber?: string;
+  issueDescription: string;
+  status: "pending" | "in_progress" | "completed" | "cancelled";
+  estimatedCost?: number;
+  finalCost?: number;
+  assignedTo?: mongoose.Types.ObjectId;
+  internalNotes?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  estimatedCompletionDate?: Date;
+  completedAt?: Date;
 }
 
 const RepairOrderSchema = new Schema<IRepairOrder>(
@@ -90,8 +90,14 @@ const RepairOrderSchema = new Schema<IRepairOrder>(
     completedAt: {
       type: Date,
     },
+    service: {
+      type: Schema.Types.ObjectId,
+      ref: "Service",
+      required: true,
+    },
   },
-  { timestamps: true },
-)
+  { timestamps: true }
+);
 
-export default mongoose.models.RepairOrder || mongoose.model<IRepairOrder>("RepairOrder", RepairOrderSchema)
+export default mongoose.models.RepairOrder ||
+  mongoose.model<IRepairOrder>("RepairOrder", RepairOrderSchema);

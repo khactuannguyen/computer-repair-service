@@ -123,7 +123,7 @@ export default async function OrdersPage({
           asChild
           className="mt-4 sm:mt-0 bg-yellow-400 hover:bg-yellow-500"
         >
-          <Link href="/admin/dashboard/orders/new">
+          <Link href="/admin/management/orders/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Tạo đơn mới
           </Link>
@@ -240,10 +240,16 @@ export default async function OrdersPage({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <Link
-                        href={`/admin/dashboard/orders/${order.id}`}
+                        href={`/admin/management/orders/${order.id}`}
                         className="text-blue-600 hover:text-blue-900 mr-4"
                       >
                         Chi tiết
+                      </Link>
+                      <Link
+                        href={`/admin/management/orders/${order.id}/edit`}
+                        className="text-yellow-600 hover:text-yellow-900"
+                      >
+                        Chỉnh sửa
                       </Link>
                     </td>
                   </tr>
