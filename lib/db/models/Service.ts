@@ -1,3 +1,4 @@
+import "./Category";
 import mongoose, { Schema, type Document } from "mongoose";
 import { LocalizedStringSchema, type LocalizedString } from "./LocalizedString";
 
