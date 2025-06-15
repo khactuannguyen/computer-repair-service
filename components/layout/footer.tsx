@@ -113,7 +113,7 @@ export default function Footer() {
               <li className="flex items-start">
                 <MapPin className="mr-2 h-5 w-5 text-muted-foreground" />
                 <Link
-                  href="https://maps.app.goo.gl/Yx5Yx5Yx5Yx5Yx5Yx5"
+                  href={t("contact.info.address.link")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary"

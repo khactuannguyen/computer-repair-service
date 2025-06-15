@@ -108,7 +108,7 @@ export default function NewServicePage() {
     setFormData((prev) => ({
       ...prev,
       [field]: {
-        ...prev[field as keyof typeof prev],
+        ...prev,
         [lang]: value,
       },
     }));

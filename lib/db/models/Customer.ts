@@ -39,7 +39,6 @@ const CustomerSchema = new Schema<ICustomer>(
 
 // Ensure indexes
 CustomerSchema.index({ email: 1 });
-CustomerSchema.index({ phone: 1 });
 
 export default mongoose.models.Customer ||
   mongoose.model<ICustomer>("Customer", CustomerSchema);

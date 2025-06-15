@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import CustomerForm from "@/components/admin/customer-form";
 
+export const dynamic = "force-dynamic";
+
 export default function CustomerListPage() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
