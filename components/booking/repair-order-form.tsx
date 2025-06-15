@@ -23,6 +23,8 @@ export default function RepairOrderForm({ technicians, services }: any) {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [trackingCodeChecking, setTrackingCodeChecking] = useState(false);
+  const [trackingCodeExists, setTrackingCodeExists] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -33,10 +35,37 @@ export default function RepairOrderForm({ technicians, services }: any) {
     setForm((prev: any) => ({ ...prev, [name]: value }));
   };
 
+  const handleTrackingCodeBlur = async () => {
+    if (!form.trackingCode) return;
+    setTrackingCodeChecking(true);
+    setTrackingCodeExists(false);
+    try {
+      const res = await fetch(
+        `/api/admin/orders?search=${encodeURIComponent(form.trackingCode)}`
+      );
+      const data = await res.json();
+      if (
+        data.orders &&
+        data.orders.some((o: any) => o.trackingCode === form.trackingCode)
+      ) {
+        setTrackingCodeExists(true);
+      }
+    } catch (err) {
+      // ignore
+    } finally {
+      setTrackingCodeChecking(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    if (trackingCodeExists) {
+      setError("Mã đơn hàng đã tồn tại. Vui lòng nhập mã khác.");
+      setLoading(false);
+      return;
+    }
     try {
       const res = await fetch("/api/admin/orders", {
         method: "POST",
@@ -209,8 +238,19 @@ export default function RepairOrderForm({ technicians, services }: any) {
             required
             value={form.trackingCode}
             onChange={handleChange}
+            onBlur={handleTrackingCodeBlur}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 sm:text-sm"
           />
+          {trackingCodeChecking && (
+            <div className="text-xs text-gray-500 mt-1">
+              Đang kiểm tra mã đơn hàng...
+            </div>
+          )}
+          {trackingCodeExists && (
+            <div className="text-xs text-red-500 mt-1">
+              Mã đơn hàng đã tồn tại. Vui lòng nhập mã khác.
+            </div>
+          )}
         </div>
         <div>
           <label
