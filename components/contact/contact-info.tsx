@@ -45,10 +45,10 @@ export default function ContactInfo() {
               {t("contact.info.email.subtitle")}
             </p> */}
             <Link
-              href="mailto:laptopsun.vn@gmail.com"
+              href="mailto:contact@laptopsun.vn"
               className="mt-2 block font-medium text-primary hover:underline"
             >
-              laptopsun.vn@gmail.com
+              contact@laptopsun.vn
             </Link>
           </div>
         </div>

@@ -36,9 +36,6 @@ function createTransporter() {
 export async function sendEmail({ to, subject, html, text }: EmailOptions) {
   try {
     // For development/preview environments, log email instead of sending
-
-    console.log("Node Environment:", process.env.NODE_ENV);
-    console.log("Vercel Environment:", process.env.VERCEL_ENV);
     if (
       process.env.NODE_ENV === "development" ||
       process.env.VERCEL_ENV === "preview"
@@ -63,7 +60,7 @@ export async function sendEmail({ to, subject, html, text }: EmailOptions) {
     const transporter = createTransporter();
 
     const mailOptions = {
-      from: `"LaptopSun" <${process.env.FROM_EMAIL}>`,
+      from: `"LaptopSun.vn" <${process.env.FROM_EMAIL}>`,
       to,
       subject,
       html,

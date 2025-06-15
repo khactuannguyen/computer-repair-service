@@ -154,7 +154,9 @@ export async function submitBookingForm(formData: BookingFormData) {
           </div>
         </div>
         
-        <p style="font-size: 16px; margin-bottom: 20px;">Xin chào <strong style="color: #FACC15;">${sanitizedData.fullName}</strong>,</p>
+        <p style="font-size: 16px; margin-bottom: 20px;">Xin chào <strong style="color: #FACC15;">${
+          sanitizedData.fullName
+        }</strong>,</p>
         <p style="font-size: 16px; margin-bottom: 20px;">Cảm ơn bạn đã đặt lịch sửa chữa với <strong style="color: #FACC15;">LaptopSun</strong>. Chúng tôi đã nhận được yêu cầu của bạn và sẽ liên hệ sớm nhất để xác nhận.</p>
         
         <div style="background-color: #f8f9fa; padding: 25px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #FACC15;">
@@ -174,7 +176,9 @@ export async function submitBookingForm(formData: BookingFormData) {
             <div style="margin-left: 20px; margin-top: 8px;">
               • <strong>Loại thiết bị:</strong> ${deviceTypeName}<br>
               • <strong>Dịch vụ:</strong> ${sanitizedData.serviceId}<br>
-              • <strong>Mô tả vấn đề:</strong> ${sanitizedData.problemDescription}
+              • <strong>Mô tả vấn đề:</strong> ${
+                sanitizedData.problemDescription
+              }
             </div>
           </div>
           
@@ -201,7 +205,7 @@ export async function submitBookingForm(formData: BookingFormData) {
             </p>
           </div>
           <p style="margin: 5px 0;">
-            📧 Email: ${process.env.TO_EMAIL || "laptopsun.vn@gmail.com"}<br>
+            📧 Email: ${process.env.TO_EMAIL || "booking@laptopsun.vn"}<br>
             📱 Hotline: 0857 270 270<br>
             🏠 Địa chỉ: 995 CMT8, Phường 7, Quận Tân Bình, TP.HCM
           </p>
@@ -220,7 +224,9 @@ export async function submitBookingForm(formData: BookingFormData) {
         <div style="background-color: #f8f9fa; padding: 25px; border-radius: 12px; border-left: 4px solid #FACC15;">
           <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #FACC15; padding-bottom: 10px; font-size: 18px;">👤 Thông tin khách hàng</h3>
           <div style="margin-left: 15px;">
-            <p><strong>Họ và tên:</strong> <span style="color: #FACC15;">${sanitizedData.fullName}</span></p>
+            <p><strong>Họ và tên:</strong> <span style="color: #FACC15;">${
+              sanitizedData.fullName
+            }</span></p>
             <p><strong>Email:</strong> ${sanitizedData.email}</p>
             <p><strong>Số điện thoại:</strong> ${sanitizedData.phone}</p>
           </div>
@@ -229,13 +235,17 @@ export async function submitBookingForm(formData: BookingFormData) {
           <div style="margin-left: 15px;">
             <p><strong>Loại thiết bị:</strong> <span style="color: #FACC15;">${deviceTypeName}</span></p>
             <p><strong>Dịch vụ:</strong> ${sanitizedData.serviceId}</p>
-            <p><strong>Mô tả vấn đề:</strong> ${sanitizedData.problemDescription}</p>
+            <p><strong>Mô tả vấn đề:</strong> ${
+              sanitizedData.problemDescription
+            }</p>
           </div>
           
           <h3 style="color: #333; border-bottom: 2px solid #FACC15; padding-bottom: 10px; font-size: 18px; margin-top: 25px;">📅 Thời gian hẹn</h3>
           <div style="margin-left: 15px;">
             <p><strong>Ngày:</strong> <span style="color: #FACC15;">${formattedDate}</span></p>
-            <p><strong>Giờ:</strong> <span style="color: #FACC15;">${sanitizedData.preferredTime}</span></p>
+            <p><strong>Giờ:</strong> <span style="color: #FACC15;">${
+              sanitizedData.preferredTime
+            }</span></p>
           </div>
         </div>
         
@@ -243,15 +253,21 @@ export async function submitBookingForm(formData: BookingFormData) {
           <p style="margin: 0; font-size: 15px; line-height: 1.6;">
             <strong style="color: #856404;">⚠️ Hành động cần thiết:</strong><br>
             Vui lòng liên hệ với khách hàng trong vòng <strong>2-4 giờ</strong> để xác nhận lịch hẹn.<br>
-            <strong>ID Booking:</strong> <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 4px;">${booking._id}</code>
+            <strong>ID Booking:</strong> <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 4px;">${
+              booking._id
+            }</code>
           </p>
         </div>
         
         <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 12px; border-left: 4px solid #2196f3;">
           <p style="margin: 0; font-size: 14px; line-height: 1.6;">
-            <strong style="color: #1976d2;">📅 Thời gian nhận:</strong> ${new Date().toLocaleString("vi-VN")}<br>
+            <strong style="color: #1976d2;">📅 Thời gian nhận:</strong> ${new Date().toLocaleString(
+              "vi-VN"
+            )}<br>
             <strong style="color: #1976d2;">🌐 Nguồn:</strong> Website LaptopSun<br>
-            <strong style="color: #1976d2;">📧 Email khách hàng:</strong> ${sanitizedData.email}
+            <strong style="color: #1976d2;">📧 Email khách hàng:</strong> ${
+              sanitizedData.email
+            }
           </p>
         </div>
       </div>
