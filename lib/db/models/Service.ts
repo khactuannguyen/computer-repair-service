@@ -10,7 +10,7 @@ export interface IService extends Document {
     to?: number;
   };
   estimatedTime: string;
-  category: "macbook" | "laptop" | "data" | "other";
+  category: mongoose.Types.ObjectId;
   icon: string;
   imageUrl?: string;
   features?: LocalizedString[];

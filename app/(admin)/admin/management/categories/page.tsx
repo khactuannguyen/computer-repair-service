@@ -98,8 +98,8 @@ export default function AdminCategoriesPage() {
                 <TableRow>
                   <TableHead>Tên danh mục</TableHead>
                   <TableHead>Mô tả</TableHead>
-                  <TableHead>Ngày tạo</TableHead>
                   <TableHead>Thứ tự</TableHead>
+                  <TableHead>Ngày tạo</TableHead>
                   <TableHead className="w-[100px]">Thao tác</TableHead>
                 </TableRow>
               </TableHeader>
@@ -116,12 +116,12 @@ export default function AdminCategoriesPage() {
                         {cat.description?.[lang]}
                       </div>
                     </TableCell>
+                    <TableCell>{cat.order ?? 0}</TableCell>
                     <TableCell>
                       {cat.createdAt
                         ? new Date(cat.createdAt).toLocaleDateString()
                         : ""}
                     </TableCell>
-                    <TableCell>{cat.order ?? 0}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

@@ -19,6 +19,7 @@ export interface IRepairOrder extends Document {
   updatedAt: Date;
   estimatedCompletionDate?: Date;
   completedAt?: Date;
+  service: mongoose.Types.ObjectId;
 }
 
 const RepairOrderSchema = new Schema<IRepairOrder>(
