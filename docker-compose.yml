@@ -1,0 +1,29 @@
+services:
+  mongodb:
+    image: mongodb/mongodb-community-server:7.0.17-ubi9
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_ROOT_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_ROOT_PASSWORD
+      MONGO_INITDB_DATABASE: $MONGO_DATABASE
+    volumes:
+      - mongo_data:/data/db
+      # - mongo-config:/data/configdb
+
+  app:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: $APP_IMAGE:$APP_TAG
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT}:3000"
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo_data:
