@@ -7,15 +7,15 @@ import connectToDatabase from "@/lib/db/mongodb";
 import bcrypt from "bcryptjs";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
-const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+const DEFAULT_SESSION_AGE = Number(process.env.SESSION_EXPIRE) || 60 * 60; // 1 hour
 
-export async function signJWT(payload: any) {
+export async function signJWT(payload: any, expiresIn: string = "1h") {
   const secret = new TextEncoder().encode(JWT_SECRET);
 
   const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime(expiresIn)
     .sign(secret);
 
   return token;
@@ -32,7 +32,11 @@ export async function verifyJWT(token: string) {
   }
 }
 
-export async function login(email: string, password: string) {
+export async function login(
+  email: string,
+  password: string,
+  sessionAge: number = DEFAULT_SESSION_AGE
+) {
   try {
     await connectToDatabase();
 
@@ -47,17 +51,20 @@ export async function login(email: string, password: string) {
     }
 
     // Create a JWT token
-    const token = await signJWT({
-      id: user._id.toString(),
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
+    const token = await signJWT(
+      {
+        id: user._id.toString(),
+        email: user.email,
+        role: user.role,
+        name: user.name,
+      },
+      `${sessionAge}s`
+    );
 
     // Set the token in cookies
     cookies().set("auth-token", token, {
       httpOnly: true,
-      maxAge: MAX_AGE,
+      maxAge: sessionAge,
       path: "/",
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
