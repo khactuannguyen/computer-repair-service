@@ -53,8 +53,6 @@ interface Service {
   updatedAt: string;
 }
 
-export const dynamic = "force-dynamic";
-
 export default function AdminServicesPage() {
   const { t, locale } = useTranslation();
   const [services, setServices] = useState<Service[]>([]);

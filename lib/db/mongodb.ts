@@ -1,10 +1,18 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "";
+// Only access environment variables at runtime, not at build time
+const getMongoDB_URI = () => {
+  // Skip database connection during build time
+  if (process.env.BUILD_TIME === "true") {
+    throw new Error("Database connection not available during build time");
+  }
 
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
-}
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("Please define the MONGODB_URI environment variable");
+  }
+  return uri;
+};
 
 let cached: any = (global as any).mongoose;
 
@@ -21,6 +29,9 @@ async function connectToDatabase() {
     const opts = {
       bufferCommands: false,
     };
+
+    // Get MongoDB URI at runtime, not at module load time
+    const MONGODB_URI = getMongoDB_URI();
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       return mongoose;

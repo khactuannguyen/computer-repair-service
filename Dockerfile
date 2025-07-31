@@ -15,6 +15,9 @@ RUN npm install --legacy-peer-deps
 COPY . .
 COPY .env.public .env
 
+# Set build-time environment variable
+ENV BUILD_TIME=true
+
 RUN npm run build
 
 # Step 2: Run the application

@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TranslationProvider } from "@/components/providers/translation-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { defaultLocale } from "@/lib/i18n/config";
+import GoogleAnalytics from "@/components/analytics/google-analytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang={defaultLocale} suppressHydrationWarning>
       <body className={inter.className}>
+        <GoogleAnalytics />
         <Toaster />
         <ThemeProvider
           attribute="class"

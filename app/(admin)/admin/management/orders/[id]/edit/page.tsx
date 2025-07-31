@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowLeft, Save } from "lucide-react";
 
-export const dynamic = "force-dynamic";
 
 export default function EditOrderPage() {
   const router = useRouter();

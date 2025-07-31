@@ -21,8 +21,6 @@ import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/use-translation";
 
-export const dynamic = "force-dynamic";
-
 export default function EditServicePage() {
   const { t, locale } = useTranslation();
   const router = useRouter();

@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export const dynamic = "force-dynamic";
-
 export default function CategoryNewPage() {
   const router = useRouter();
   const [form, setForm] = useState({

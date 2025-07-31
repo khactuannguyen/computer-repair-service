@@ -2,6 +2,8 @@ import type React from "react";
 import { checkAuth } from "@/lib/auth/auth";
 import { AdminSidebar } from "@/components/admin/sidebar";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminManagementLayout({
   children,
 }: {
