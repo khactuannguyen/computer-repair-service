@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
+import { withErrorHandler } from "@/lib/utils/error-middleware";
 
-export const dynamic = "force-dynamic";
-
-export async function POST() {
+export const POST = withErrorHandler(async function POST() {
   // Remove the auth cookie (adjust the cookie name as needed)
   return NextResponse.json(
     { success: true },
@@ -12,4 +11,4 @@ export async function POST() {
       },
     }
   );
-}
+});
