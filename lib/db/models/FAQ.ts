@@ -1,49 +1,30 @@
-import mongoose, { Schema, type Document } from "mongoose";
+import mongoose from "mongoose"
 
-export interface IFAQ extends Document {
-  question: {
-    vi: string;
-    en: string;
-  };
-  answer: {
-    vi: string;
-    en: string;
-  };
-  category: string;
-  order: number;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const FAQSchema = new Schema<IFAQ>(
+const FAQSchema = new mongoose.Schema(
   {
+    documentId: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    lang: {
+      type: String,
+      required: true,
+      enum: ["vi", "en"],
+      index: true,
+    },
     question: {
-      vi: {
-        type: String,
-        required: [true, "Vietnamese question is required"],
-        trim: true,
-      },
-      en: {
-        type: String,
-        required: [true, "English question is required"],
-        trim: true,
-      },
+      type: String,
+      required: true,
     },
     answer: {
-      vi: {
-        type: String,
-        required: [true, "Vietnamese answer is required"],
-      },
-      en: {
-        type: String,
-        required: [true, "English answer is required"],
-      },
+      type: String,
+      required: true,
     },
     category: {
       type: String,
-      required: [true, "Category is required"],
-      trim: true,
+      required: true,
+      enum: ["general", "warranty", "pricing", "technical", "support"],
     },
     order: {
       type: Number,
@@ -54,11 +35,13 @@ const FAQSchema = new Schema<IFAQ>(
       default: true,
     },
   },
-  { timestamps: true }
-);
+  {
+    timestamps: true,
+  },
+)
 
-// Ensure indexes
-FAQSchema.index({ category: 1, order: 1 });
-FAQSchema.index({ isActive: 1 });
+// Compound indexes for efficient queries
+FAQSchema.index({ documentId: 1, lang: 1 }, { unique: true })
+FAQSchema.index({ lang: 1, category: 1, isActive: 1, order: 1 })
 
-export default mongoose.models.FAQ || mongoose.model<IFAQ>("FAQ", FAQSchema);
+export default mongoose.models.FAQ || mongoose.model("FAQ", FAQSchema)

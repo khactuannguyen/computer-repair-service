@@ -1,50 +1,40 @@
-import mongoose, { Schema, type Document } from "mongoose";
-import { LocalizedStringSchema, type LocalizedString } from "./LocalizedString";
+import mongoose from "mongoose"
 
-export interface ITestimonial extends Document {
-  customerName: string;
-  customerTitle: LocalizedString;
-  content: LocalizedString;
-  rating: number;
-  avatarUrl?: string;
-  serviceType: string;
-  isPublished: boolean;
-  isFeatured: boolean;
-  publishedAt?: Date;
-  order: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const TestimonialSchema = new Schema<ITestimonial>(
+const TestimonialSchema = new mongoose.Schema(
   {
+    documentId: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    lang: {
+      type: String,
+      required: true,
+      enum: ["vi", "en"],
+      index: true,
+    },
     customerName: {
       type: String,
-      required: [true, "Customer name is required"],
-      trim: true,
+      required: true,
     },
     customerTitle: {
-      type: LocalizedStringSchema,
-      required: [true, "Customer title is required"],
+      type: String,
+      required: true,
     },
     content: {
-      type: LocalizedStringSchema,
-      required: [true, "Content is required"],
+      type: String,
+      required: true,
     },
     rating: {
       type: Number,
-      required: [true, "Rating is required"],
+      required: true,
       min: 1,
       max: 5,
     },
-    avatarUrl: {
-      type: String,
-      default: "/placeholder-user.jpg",
-    },
     serviceType: {
       type: String,
-      required: [true, "Service type is required"],
-      enum: ["macbook", "laptop", "data_recovery", "hardware_upgrade", "other"],
+      required: true,
+      enum: ["macbook", "laptop", "data-recovery", "general"],
     },
     isPublished: {
       type: Boolean,
@@ -54,20 +44,21 @@ const TestimonialSchema = new Schema<ITestimonial>(
       type: Boolean,
       default: false,
     },
-    publishedAt: {
-      type: Date,
-    },
     order: {
       type: Number,
       default: 0,
     },
+    publishedAt: {
+      type: Date,
+    },
   },
-  { timestamps: true }
-);
+  {
+    timestamps: true,
+  },
+)
 
-TestimonialSchema.index({ isPublished: 1, order: 1 });
-TestimonialSchema.index({ isFeatured: 1, publishedAt: -1 });
-TestimonialSchema.index({ serviceType: 1, isPublished: 1 });
+// Compound indexes for efficient queries
+TestimonialSchema.index({ documentId: 1, lang: 1 }, { unique: true })
+TestimonialSchema.index({ lang: 1, isPublished: 1, isFeatured: 1, order: 1 })
 
-export default mongoose.models.Testimonial ||
-  mongoose.model<ITestimonial>("Testimonial", TestimonialSchema);
+export default mongoose.models.Testimonial || mongoose.model("Testimonial", TestimonialSchema)

@@ -1,70 +1,68 @@
-import "./Category";
-import mongoose, { Schema, type Document } from "mongoose";
-import { LocalizedStringSchema, type LocalizedString } from "./LocalizedString";
+import mongoose from "mongoose"
 
-export interface IService extends Document {
-  name: LocalizedString;
-  description: LocalizedString;
-  shortDescription?: LocalizedString;
-  price: {
-    from: number;
-    to?: number;
-  };
-  estimatedTime: string;
-  category: mongoose.Types.ObjectId;
-  icon: string;
-  imageUrl?: string;
-  features?: LocalizedString[];
-  isActive: boolean;
-  isFeatured: boolean;
-  order: number;
-  warranty: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const ServiceSchema = new Schema<IService>(
+const ServiceSchema = new mongoose.Schema(
   {
+    documentId: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    lang: {
+      type: String,
+      required: true,
+      enum: ["vi", "en"],
+      index: true,
+    },
     name: {
-      type: LocalizedStringSchema,
-      required: [true, "Service name is required"],
+      type: String,
+      required: true,
+      trim: true,
     },
     description: {
-      type: LocalizedStringSchema,
-      required: [true, "Service description is required"],
+      type: String,
+      required: true,
     },
     shortDescription: {
-      type: LocalizedStringSchema,
+      type: String,
+      required: true,
     },
+    slug: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    features: [
+      {
+        type: String,
+      },
+    ],
     price: {
       from: {
         type: Number,
-        required: [true, "Starting price is required"],
-        min: 0,
+        required: true,
       },
       to: {
         type: Number,
-        min: 0,
+        required: true,
       },
     },
     estimatedTime: {
       type: String,
-      required: [true, "Estimated time is required"],
+      required: true,
     },
-    category: {
-      type: Schema.Types.ObjectId,
-      ref: "Category",
-      required: [true, "Category is required"],
+    categoryDocumentId: {
+      type: String,
+      required: true,
+      index: true,
     },
     icon: {
       type: String,
-      required: [true, "Icon is required"],
-      default: "wrench",
+      default: "laptop",
     },
-    imageUrl: {
+    warranty: {
       type: String,
+      required: true,
     },
-    features: [LocalizedStringSchema],
     isActive: {
       type: Boolean,
       default: true,
@@ -77,16 +75,15 @@ const ServiceSchema = new Schema<IService>(
       type: Number,
       default: 0,
     },
-    warranty: {
-      type: String,
-      default: "3 tháng",
-    },
   },
-  { timestamps: true }
-);
+  {
+    timestamps: true,
+  },
+)
 
-ServiceSchema.index({ category: 1, isActive: 1, order: 1 });
-ServiceSchema.index({ isFeatured: 1, order: 1 });
+// Compound indexes for efficient queries
+ServiceSchema.index({ documentId: 1, lang: 1 }, { unique: true })
+ServiceSchema.index({ lang: 1, isActive: 1, isFeatured: 1 })
+ServiceSchema.index({ lang: 1, categoryDocumentId: 1, isActive: 1 })
 
-export default mongoose.models.Service ||
-  mongoose.model<IService>("Service", ServiceSchema);
+export default mongoose.models.Service || mongoose.model("Service", ServiceSchema)
