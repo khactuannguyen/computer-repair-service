@@ -7,7 +7,7 @@ const CategorySchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    lang: {
+    locale: {
       type: String,
       required: true,
       enum: ["vi", "en"],
@@ -42,7 +42,7 @@ const CategorySchema = new mongoose.Schema(
 )
 
 // Compound index for efficient queries
-CategorySchema.index({ documentId: 1, lang: 1 }, { unique: true })
-CategorySchema.index({ lang: 1, isActive: 1, order: 1 })
+CategorySchema.index({ documentId: 1, locale: 1 }, { unique: true })
+CategorySchema.index({ locale: 1, isActive: 1, order: 1 })
 
 export default mongoose.models.Category || mongoose.model("Category", CategorySchema)

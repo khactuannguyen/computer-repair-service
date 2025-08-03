@@ -7,7 +7,7 @@ const ServiceSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    lang: {
+    locale: {
       type: String,
       required: true,
       enum: ["vi", "en"],
@@ -82,8 +82,8 @@ const ServiceSchema = new mongoose.Schema(
 )
 
 // Compound indexes for efficient queries
-ServiceSchema.index({ documentId: 1, lang: 1 }, { unique: true })
-ServiceSchema.index({ lang: 1, isActive: 1, isFeatured: 1 })
-ServiceSchema.index({ lang: 1, categoryDocumentId: 1, isActive: 1 })
+ServiceSchema.index({ documentId: 1, locale: 1 }, { unique: true })
+ServiceSchema.index({ locale: 1, isActive: 1, isFeatured: 1 })
+ServiceSchema.index({ locale: 1, categoryDocumentId: 1, isActive: 1 })
 
 export default mongoose.models.Service || mongoose.model("Service", ServiceSchema)

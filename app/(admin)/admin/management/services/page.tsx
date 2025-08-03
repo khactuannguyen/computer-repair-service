@@ -1,145 +1,167 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Plus,
-  Search,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Filter,
-} from "lucide-react";
-import { useTranslation } from "@/hooks/use-translation";
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Plus, Search, MoreHorizontal, Edit, Trash2, Eye, Globe } from "lucide-react"
 
-interface Service {
-  _id: string;
-  name: {
-    vi: string;
-    en: string;
-  };
-  description: {
-    vi: string;
-    en: string;
-  };
+interface ServiceTranslation {
+  _id: string
+  documentId: string
+  locale: string
+  name: string
+  description: string
   price: {
-    from: number;
-    to?: number;
-  };
-  category: string;
-  isActive: boolean;
-  isFeatured: boolean;
-  order: number;
-  createdAt: string;
-  updatedAt: string;
+    from: number
+    to?: number
+  }
+  categoryDocumentId: string
+  isActive: boolean
+  isFeatured: boolean
+  order: number
+  createdAt: string
+  updatedAt: string
+  category?: {
+    name: string
+    documentId: string
+  }
+}
+
+interface ServiceGroup {
+  documentId: string
+  translations: {
+    vi?: ServiceTranslation
+    en?: ServiceTranslation
+  }
+  order: number
+  isActive: boolean
+  isFeatured: boolean
 }
 
 export default function AdminServicesPage() {
-  const { t, locale } = useTranslation();
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
-  const [page, setPage] = useState(1);
+  const [services, setServices] = useState<ServiceGroup[]>([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState("")
+  const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
     total: 0,
     pages: 0,
-  });
-  const [categories, setCategories] = useState<any[]>([]);
+  })
 
   useEffect(() => {
-    fetchServices();
-    fetchCategories();
-  }, [page, search, category]);
+    fetchServices()
+  }, [page, search])
 
   const fetchServices = async () => {
     try {
-      setLoading(true);
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: "10",
-        ...(search && { search }),
-        ...(category !== "all" && { category }),
-      });
+      setLoading(true)
 
-      const response = await fetch(`/api/admin/services?${params}`);
-      const data = await response.json();
+      // Get all services for both locales
+      const [viRes, enRes] = await Promise.all([
+        fetch(`/api/admin/services?locale=vi&page=${page}&limit=10${search ? `&search=${search}` : ""}`),
+        fetch(`/api/admin/services?locale=en&page=${page}&limit=10${search ? `&search=${search}` : ""}`),
+      ])
 
-      if (data.success) {
-        setServices(data.services);
-        setPagination(data.pagination);
+      const [viData, enData] = await Promise.all([viRes.json(), enRes.json()])
+
+      // Group by documentId
+      const grouped = new Map<string, ServiceGroup>()
+
+      // Process Vietnamese services
+      if (viData.success) {
+        viData.services.forEach((service: ServiceTranslation) => {
+          if (!grouped.has(service.documentId)) {
+            grouped.set(service.documentId, {
+              documentId: service.documentId,
+              translations: {},
+              order: service.order,
+              isActive: service.isActive,
+              isFeatured: service.isFeatured,
+            })
+          }
+          grouped.get(service.documentId)!.translations.vi = service
+        })
+        setPagination(viData.pagination)
       }
+
+      // Process English services
+      if (enData.success) {
+        enData.services.forEach((service: ServiceTranslation) => {
+          if (!grouped.has(service.documentId)) {
+            grouped.set(service.documentId, {
+              documentId: service.documentId,
+              translations: {},
+              order: service.order,
+              isActive: service.isActive,
+              isFeatured: service.isFeatured,
+            })
+          }
+          grouped.get(service.documentId)!.translations.en = service
+        })
+      }
+
+      // Convert to array and sort
+      const serviceGroups = Array.from(grouped.values()).sort((a, b) => a.order - b.order)
+
+      setServices(serviceGroups)
     } catch (error) {
-      console.error("Error fetching services:", error);
+      console.error("Error fetching services:", error)
+      setServices([])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch("/api/categories");
-      const data = await res.json();
-      setCategories(
-        data.sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
-      );
-    } catch (e) {
-      setCategories([]);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa dịch vụ này?")) return;
+  const handleDelete = async (translation: ServiceTranslation) => {
+    if (!confirm(`Bạn có chắc chắn muốn xóa bản dịch ${translation.locale.toUpperCase()} của dịch vụ này?`)) return
 
     try {
-      const response = await fetch(`/api/admin/services/${id}`, {
+      const response = await fetch(`/api/admin/services/${translation._id}`, {
         method: "DELETE",
-      });
+      })
 
       if (response.ok) {
-        fetchServices();
+        fetchServices()
+      } else {
+        const error = await response.json()
+        alert(`Lỗi: ${error.error || "Không thể xóa dịch vụ"}`)
       }
     } catch (error) {
-      console.error("Error deleting service:", error);
+      console.error("Error deleting service:", error)
+      alert("Có lỗi xảy ra khi xóa dịch vụ")
     }
-  };
+  }
 
-  const formatPrice = (price: Service["price"]) => {
-    if (price.to) {
-      return `${price.from.toLocaleString()} - ${price.to.toLocaleString()} VNĐ`;
+  const formatPrice = (price: ServiceTranslation["price"]) => {
+    if (price.to && price.to > price.from) {
+      return `${price.from.toLocaleString()} - ${price.to.toLocaleString()} VNĐ`
     }
-    return `Từ ${price.from.toLocaleString()} VNĐ`;
-  };
+    return `Từ ${price.from.toLocaleString()} VNĐ`
+  }
+
+  const getTranslationStatus = (group: ServiceGroup) => {
+    const hasVi = !!group.translations.vi
+    const hasEn = !!group.translations.en
+
+    if (hasVi && hasEn) return { status: "complete", text: "Đầy đủ", variant: "default" as const }
+    if (hasVi && !hasEn) return { status: "partial", text: "Thiếu EN", variant: "secondary" as const }
+    if (!hasVi && hasEn) return { status: "partial", text: "Thiếu VI", variant: "secondary" as const }
+    return { status: "empty", text: "Trống", variant: "destructive" as const }
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Quản lý Dịch vụ</h1>
-          <p className="text-muted-foreground">
-            Quản lý tất cả dịch vụ sửa chữa của cửa hàng
-          </p>
+          <p className="text-muted-foreground">Quản lý tất cả dịch vụ sửa chữa với hỗ trợ đa ngôn ngữ</p>
         </div>
         <Button asChild>
           <Link href="/admin/management/services/new">
@@ -151,7 +173,10 @@ export default function AdminServicesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Danh sách dịch vụ</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Danh sách dịch vụ (Đa ngôn ngữ)
+          </CardTitle>
           <div className="flex items-center space-x-4">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -162,24 +187,6 @@ export default function AdminServicesPage() {
                 className="pl-10"
               />
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  <Filter className="mr-2 h-4 w-4" />
-                  {categories.find((c) => c.value === category)?.label}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {categories.map((cat) => (
-                  <DropdownMenuItem
-                    key={cat.value}
-                    onClick={() => setCategory(cat.value)}
-                  >
-                    {cat.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </CardHeader>
         <CardContent>
@@ -192,6 +199,7 @@ export default function AdminServicesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Tên dịch vụ</TableHead>
+                  <TableHead>Trạng thái dịch</TableHead>
                   <TableHead>Danh mục</TableHead>
                   <TableHead>Giá</TableHead>
                   <TableHead>Trạng thái</TableHead>
@@ -200,79 +208,88 @@ export default function AdminServicesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {services.map((service) => (
-                  <TableRow key={service._id}>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{service.name.vi}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {service.name.en}
+                {services.map((group) => {
+                  const translationStatus = getTranslationStatus(group)
+                  const primaryTranslation = group.translations.vi || group.translations.en
+
+                  return (
+                    <TableRow key={group.documentId}>
+                      <TableCell>
+                        <div className="space-y-1">
+                          {group.translations.vi && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">VI</span>
+                              <span className="font-medium">{group.translations.vi.name}</span>
+                            </div>
+                          )}
+                          {group.translations.en && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">EN</span>
+                              <span className="font-medium">{group.translations.en.name}</span>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {service.category &&
-                        typeof service.category === "object" &&
-                        "name" in service.category
-                          ? (service.category as any).name?.[locale] ||
-                            (service.category as any).name?.vi ||
-                            ""
-                          : ""}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatPrice(service.price)}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <Badge
-                          variant={service.isActive ? "default" : "secondary"}
-                        >
-                          {service.isActive ? "Hoạt động" : "Tạm dừng"}
-                        </Badge>
-                        {service.isFeatured && (
-                          <Badge variant="outline">
-                            {t("services.card.featured")}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={translationStatus.variant}>{translationStatus.text}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{primaryTranslation?.category?.name || "N/A"}</Badge>
+                      </TableCell>
+                      <TableCell>{primaryTranslation && formatPrice(primaryTranslation.price)}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={group.isActive ? "default" : "secondary"}>
+                            {group.isActive ? "Hoạt động" : "Tạm dừng"}
                           </Badge>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>{service.order}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link
-                              href={`/admin/management/services/${service._id}`}
-                            >
-                              <Eye className="mr-2 h-4 w-4" />
-                              Xem
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link
-                              href={`/admin/management/services/${service._id}/edit`}
-                            >
-                              <Edit className="mr-2 h-4 w-4" />
-                              Sửa
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(service._id)}
-                            className="text-destructive"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Xóa
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                          {group.isFeatured && <Badge variant="outline">Nổi bật</Badge>}
+                        </div>
+                      </TableCell>
+                      <TableCell>{group.order}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <Link href={`/admin/management/services/${group.documentId}/view`}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                Xem
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link href={`/admin/management/services/${group.documentId}/edit`}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Sửa
+                              </Link>
+                            </DropdownMenuItem>
+                            {group.translations.vi && (
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(group.translations.vi!)}
+                                className="text-destructive"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Xóa VI
+                              </DropdownMenuItem>
+                            )}
+                            {group.translations.en && (
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(group.translations.en!)}
+                                className="text-destructive"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Xóa EN
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
               </TableBody>
             </Table>
           )}
@@ -282,16 +299,10 @@ export default function AdminServicesPage() {
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground">
                 Hiển thị {(pagination.page - 1) * pagination.limit + 1} đến{" "}
-                {Math.min(pagination.page * pagination.limit, pagination.total)}{" "}
-                trong {pagination.total} kết quả
+                {Math.min(pagination.page * pagination.limit, pagination.total)} trong {pagination.total} kết quả
               </div>
               <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setPage(page - 1)}
-                  disabled={page <= 1}
-                >
+                <Button variant="outline" size="sm" onClick={() => setPage(page - 1)} disabled={page <= 1}>
                   Trước
                 </Button>
                 <Button
@@ -308,5 +319,5 @@ export default function AdminServicesPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }
