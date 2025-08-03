@@ -25,7 +25,12 @@ export function useTranslation() {
   const { locale } = context
 
   const t = (key: string): string => {
-    return getTranslation(locale, key)
+    try {
+      return getTranslation(locale, key)
+    } catch (error) {
+      console.warn(`Translation key "${key}" not found for locale "${locale}"`)
+      return key
+    }
   }
 
   return { t, locale, setLocale: context.setLocale }

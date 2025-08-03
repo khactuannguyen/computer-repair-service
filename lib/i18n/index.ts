@@ -24,6 +24,7 @@ export function getTranslation(locale: Locale, key: string): string {
         if (value && typeof value === "object" && fallbackKey in value) {
           value = value[fallbackKey]
         } else {
+          console.warn(`Translation key "${key}" not found in fallback locale "vi"`)
           return key // Return key if not found in fallback
         }
       }
