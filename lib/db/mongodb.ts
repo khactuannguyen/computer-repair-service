@@ -49,3 +49,4 @@ async function connectToDatabase() {
 }
 
 export default connectToDatabase;
+export const connectDB = connectToDatabase;

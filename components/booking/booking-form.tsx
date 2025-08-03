@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { services } from "@/lib/services-data"
 import { useTranslation } from "@/hooks/use-translation"
-import { submitBookingForm } from "@/lib/actions/booking-actions"
 
 interface BookingFormProps {
   initialServiceId: string | null
@@ -78,15 +77,17 @@ export default function BookingForm({ initialServiceId }: BookingFormProps) {
 
     try {
       // Submit form data and send emails
-      const result = await submitBookingForm(formData)
-
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const result = await res.json();
       if (result.success) {
         toast({
           title: t("booking.messages.success_title"),
           description: t("booking.messages.success_description"),
-        })
-
-        // Reset form
+        });
         setFormData({
           fullName: "",
           email: "",
@@ -96,17 +97,15 @@ export default function BookingForm({ initialServiceId }: BookingFormProps) {
           problemDescription: "",
           preferredDate: "",
           preferredTime: "",
-        })
-        setErrors({})
-
-        // Redirect to thank you page
-        router.push("/booking-confirmation")
+        });
+        setErrors({});
+        router.push("/booking-confirmation");
       } else {
         toast({
           title: t("booking.messages.error_title"),
-          description: result.message || t("booking.messages.error_description"),
+          description: result.error || t("booking.messages.error_description"),
           variant: "destructive",
-        })
+        });
       }
     } catch (error) {
       toast({

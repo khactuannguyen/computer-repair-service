@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { useTranslation } from "@/hooks/use-translation"
-import { ServiceCard } from "@/components/services/service-card"
+import { getTranslation } from "@/lib/i18n"
+import ServiceCard from "@/components/services/service-card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -43,18 +43,15 @@ async function getCategories(lang: string) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = useTranslation()
-
+  const lang = "vi" // hoặc lấy từ context nếu cần
   return {
-    title: t("services.title"),
-    description: t("services.subtitle"),
+    title: getTranslation(lang, "services.title"),
+    description: getTranslation(lang, "services.subtitle"),
   }
 }
 
 export default async function ServicesPage() {
-  const t = useTranslation()
-  const lang = "vi" // This should come from locale context
-
+  const lang = "vi" // hoặc lấy từ context nếu cần
   const [services, categories] = await Promise.all([getServices(lang), getCategories(lang)])
 
   // Group services by category
@@ -68,6 +65,9 @@ export default async function ServicesPage() {
   }, {})
 
   const featuredServices = services.filter((service: any) => service.isFeatured)
+
+  // Helper dịch
+  const t = (key: string) => getTranslation(lang, key)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">

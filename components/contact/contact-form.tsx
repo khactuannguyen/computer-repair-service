@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { sendContactEmail } from "@/lib/actions/contact-actions";
 
 export default function ContactForm() {
   const { t } = useTranslation();
@@ -72,15 +71,17 @@ export default function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      const result = await sendContactEmail(formData);
-
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const result = await res.json();
       if (result.success) {
         toast({
           title: t("contact.messages.success_title"),
           description: t("contact.messages.success_description"),
         });
-
-        // Reset form
         setFormData({
           fullName: "",
           email: "",
@@ -91,7 +92,7 @@ export default function ContactForm() {
       } else {
         toast({
           title: t("contact.messages.error_title"),
-          description: t("contact.messages.error_description"),
+          description: result.error || t("contact.messages.error_description"),
           variant: "destructive",
         });
       }
